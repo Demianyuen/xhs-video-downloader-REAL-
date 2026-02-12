@@ -25,6 +25,8 @@ export default function DownloadPage() {
   const [activeTab, setActiveTab] = useState<'video' | 'transcript'>('video');
   const [downloading, setDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
+  const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const fetchVideoData = async () => {
@@ -153,7 +155,7 @@ export default function DownloadPage() {
           {/* Left Column: Video Preview & Download */}
           <div className="lg:col-span-2 space-y-6">
             {/* Video Preview Card */}
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow animate-fade-in">
               <div className="relative bg-gray-900 aspect-video overflow-hidden">
                 <img
                   src={videoData.thumbnail}
@@ -206,15 +208,16 @@ export default function DownloadPage() {
                       Select Quality:
                     </label>
                     <div className="grid grid-cols-2 gap-3">
-                      {(videoData.availableResolutions || DEFAULT_RESOLUTIONS).map((res) => (
+                      {(videoData.availableResolutions || DEFAULT_RESOLUTIONS).map((res, idx) => (
                         <button
                           key={res}
                           onClick={() => setSelectedResolution(res)}
-                          className={`py-3 px-4 rounded-lg font-semibold transition-all ${
+                          className={`py-3 px-4 rounded-lg font-semibold transition-all hover-scale ${
                             selectedResolution === res
-                              ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-lg'
+                              ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-lg animate-scale-in'
                               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                           }`}
+                          style={{animationDelay: `${idx * 0.05}s`}}
                         >
                           {res}
                         </button>
@@ -258,7 +261,7 @@ export default function DownloadPage() {
             </div>
 
             {/* Tabs Section */}
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden animate-fade-in-delay-1">
               {/* Tab Buttons */}
               <div className="flex border-b border-gray-200">
                 <button
@@ -291,7 +294,7 @@ export default function DownloadPage() {
                       <h3 className="font-semibold text-gray-800 mb-3">Download Instructions:</h3>
                       <ol className="space-y-2 text-sm text-gray-700">
                         <li>1. Select your preferred video quality above</li>
-                        <li>2. Click the "Download Video" button</li>
+                        <li>2. Click the &quot;Download Video&quot; button</li>
                         <li>3. Your browser will start downloading the file</li>
                         <li>4. Save the file to your device</li>
                       </ol>
@@ -340,21 +343,21 @@ export default function DownloadPage() {
           {/* Right Column: Features & Info */}
           <div className="lg:col-span-1">
             {/* Features Card */}
-            <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-4 space-y-6">
+            <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-4 space-y-6 animate-slide-in-right">
               <div>
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <span>✨</span> Features
                 </h3>
                 <div className="space-y-3">
-                  <div className="p-4 bg-gradient-to-br from-pink-50 to-pink-100 rounded-lg border border-pink-200 hover:shadow-md transition-shadow">
+                  <div className="p-4 bg-gradient-to-br from-pink-50 to-pink-100 rounded-lg border border-pink-200 hover:shadow-md transition-shadow hover-lift animate-fade-in-delay-1">
                     <p className="font-semibold text-gray-800 mb-1">📋 Summary</p>
                     <p className="text-xs text-gray-600">AI-powered video summary</p>
                   </div>
-                  <div className="p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg border border-orange-200 hover:shadow-md transition-shadow">
+                  <div className="p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg border border-orange-200 hover:shadow-md transition-shadow hover-lift animate-fade-in-delay-2">
                     <p className="font-semibold text-gray-800 mb-1">🎯 Key Points</p>
                     <p className="text-xs text-gray-600">Extract main topics</p>
                   </div>
-                  <div className="p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg border border-yellow-200 hover:shadow-md transition-shadow">
+                  <div className="p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg border border-yellow-200 hover:shadow-md transition-shadow hover-lift animate-fade-in-delay-3">
                     <p className="font-semibold text-gray-800 mb-1">⏱️ Timestamps</p>
                     <p className="text-xs text-gray-600">Jump to sections</p>
                   </div>
@@ -367,13 +370,13 @@ export default function DownloadPage() {
                   <span>🔗</span> Share
                 </h4>
                 <div className="space-y-2">
-                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-all text-sm">
+                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-all text-sm hover-scale animate-fade-in-delay-1">
                     Share on Facebook
                   </button>
-                  <button className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 rounded-lg transition-all text-sm">
+                  <button className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 rounded-lg transition-all text-sm hover-scale animate-fade-in-delay-2">
                     Share on Twitter
                   </button>
-                  <button className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition-all text-sm">
+                  <button className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition-all text-sm hover-scale animate-fade-in-delay-3">
                     Share on WhatsApp
                   </button>
                 </div>
@@ -408,7 +411,7 @@ export default function DownloadPage() {
             <a href="/terms" className="text-pink-500 hover:text-pink-600 ml-1">Terms</a>
           </p>
           <p className="mt-2 text-xs text-gray-500">
-            For personal use only. Please respect copyright and creators' rights.
+            For personal use only. Please respect copyright and creators&apos; rights.
           </p>
         </div>
       </footer>

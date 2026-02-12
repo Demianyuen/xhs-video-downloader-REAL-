@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
-
-// SHARED in-memory storage for video data (same instance used by download API)
-// TODO: Replace with persistent database (Supabase, PlanetScale, etc.)
-export const videoStore = new Map();
+import { videoStore } from '@/lib/video-store';
 
 export async function GET(
   request: NextRequest,

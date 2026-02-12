@@ -55,7 +55,7 @@ export default function PaymentCancel() {
             </div>
             <div>
               <p className="font-semibold text-gray-700">我可以重试吗？</p>
-              <p>是的，您可以随时重新购买。点击上面的"重新购买"按钮。</p>
+              <p>是的，您可以随时重新购买。点击上面的&quot;重新购买&quot;按钮。</p>
             </div>
             <div>
               <p className="font-semibold text-gray-700">我需要帮助吗？</p>

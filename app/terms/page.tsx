@@ -49,7 +49,7 @@ export default function TermsPage() {
 
           <section>
             <h3 className="text-xl font-bold text-gray-900 mb-4">4. Disclaimer</h3>
-            <p className="text-gray-600">The materials on XHS Video Downloader are provided on an 'as is' basis. We make no warranties and disclaim all warranties including merchantability, fitness for a particular purpose, or non-infringement of rights.</p>
+            <p className="text-gray-600">The materials on XHS Video Downloader are provided on an &apos;as is&apos; basis. We make no warranties and disclaim all warranties including merchantability, fitness for a particular purpose, or non-infringement of rights.</p>
           </section>
 
           <section>

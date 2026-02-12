@@ -54,7 +54,7 @@ export default function AboutPage() {
               </div>
               <div>
                 <h4 className="font-bold text-gray-900 mb-2">Privacy</h4>
-                <p className="text-gray-600">We respect your privacy and don't collect unnecessary data.</p>
+                <p className="text-gray-600">We respect your privacy and don&apos;t collect unnecessary data.</p>
               </div>
               <div>
                 <h4 className="font-bold text-gray-900 mb-2">Reliability</h4>
@@ -69,7 +69,7 @@ export default function AboutPage() {
 
           <section>
             <h3 className="text-2xl font-bold text-gray-900 mb-4">Legal Notice</h3>
-            <p className="text-gray-600 mb-4">XHS Video Downloader is for personal, non-commercial use only. Users are responsible for ensuring compliance with applicable laws and Xiaohongshu's terms of service.</p>
+            <p className="text-gray-600 mb-4">XHS Video Downloader is for personal, non-commercial use only. Users are responsible for ensuring compliance with applicable laws and Xiaohongshu&apos;s terms of service.</p>
             <p className="text-gray-600">For more information, see our <a href="/terms" className="text-pink-500 hover:text-pink-600 font-semibold">Terms of Service</a> and <a href="/privacy" className="text-pink-500 hover:text-pink-600 font-semibold">Privacy Policy</a>.</p>
           </section>
 

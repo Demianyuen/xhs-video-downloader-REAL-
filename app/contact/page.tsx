@@ -72,7 +72,7 @@ export default function ContactPage() {
                 </button>
                 {submitted && (
                   <div className="p-4 bg-green-100 text-green-700 rounded-lg">
-                    ✅ Thank you! We'll get back to you soon.
+                    ✅ Thank you! We&apos;ll get back to you soon.
                   </div>
                 )}
               </form>
@@ -105,7 +105,7 @@ export default function ContactPage() {
 
                 <div className="p-4 bg-gradient-to-br from-pink-50 to-orange-50 rounded-lg">
                   <h4 className="font-bold text-gray-900 mb-2">💡 Feedback</h4>
-                  <p className="text-gray-600 text-sm">We'd love to hear your suggestions and feedback to improve our service!</p>
+                  <p className="text-gray-600 text-sm">We&apos;d love to hear your suggestions and feedback to improve our service!</p>
                 </div>
               </div>
             </div>
