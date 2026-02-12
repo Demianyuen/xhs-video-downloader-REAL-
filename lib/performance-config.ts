@@ -48,14 +48,18 @@ export function initPerformanceMonitoring() {
   if (typeof window === 'undefined') return;
 
   // Measure Web Vitals
-  if ('web-vital' in window) {
+  try {
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        console.log(`${entry.name}: ${entry.value}`);
+        if ('duration' in entry) {
+          console.log(`${entry.name}: ${(entry as any).duration}ms`);
+        }
       }
     });
 
     observer.observe({ entryTypes: ['largest-contentful-paint', 'layout-shift', 'first-input'] });
+  } catch (error) {
+    console.warn('Performance monitoring not supported');
   }
 }
 
