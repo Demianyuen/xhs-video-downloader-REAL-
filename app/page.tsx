@@ -56,6 +56,8 @@ export default function Home() {
           </div>
           <div className="flex gap-2 text-sm">
             <a href="/about" className="text-gray-600 hover:text-gray-800 font-medium">About</a>
+            <a href="/pricing" className="text-gray-600 hover:text-gray-800 font-medium">Pricing</a>
+            <a href="/faq" className="text-gray-600 hover:text-gray-800 font-medium">FAQ</a>
             <a href="/privacy" className="text-gray-600 hover:text-gray-800 font-medium">Privacy</a>
           </div>
         </div>
@@ -289,8 +291,9 @@ export default function Home() {
               <h4 className="font-bold text-gray-900 mb-3">Product</h4>
               <ul className="space-y-2 text-sm text-gray-600">
                 <li><a href="/" className="hover:text-pink-500">Home</a></li>
+                <li><a href="/pricing" className="hover:text-pink-500">Pricing</a></li>
+                <li><a href="/faq" className="hover:text-pink-500">FAQ</a></li>
                 <li><a href="/about" className="hover:text-pink-500">About</a></li>
-                <li><a href="/contact" className="hover:text-pink-500">Contact</a></li>
               </ul>
             </div>
             <div>

@@ -103,6 +103,25 @@ export default function DownloadPage() {
     document.body.removeChild(element);
   };
 
+  const handleShareTwitter = () => {
+    if (!videoData) return;
+    const text = `Check out this XHS video: ${videoData.title}`;
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
+    window.open(url, '_blank', 'width=550,height=420');
+  };
+
+  const handleShareFacebook = () => {
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+    window.open(url, '_blank', 'width=550,height=420');
+  };
+
+  const handleShareWhatsApp = () => {
+    if (!videoData) return;
+    const text = `Check out this XHS video: ${videoData.title} ${window.location.href}`;
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  };
+
   const formatDuration = (seconds: number) => {
     if (!seconds) return 'N/A';
     const mins = Math.floor(seconds / 60);
@@ -370,13 +389,13 @@ export default function DownloadPage() {
                   <span>🔗</span> Share
                 </h4>
                 <div className="space-y-2">
-                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-all text-sm hover-scale animate-fade-in-delay-1">
+                  <button onClick={handleShareFacebook} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-all text-sm hover-scale animate-fade-in-delay-1">
                     Share on Facebook
                   </button>
-                  <button className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 rounded-lg transition-all text-sm hover-scale animate-fade-in-delay-2">
+                  <button onClick={handleShareTwitter} className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 rounded-lg transition-all text-sm hover-scale animate-fade-in-delay-2">
                     Share on Twitter
                   </button>
-                  <button className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition-all text-sm hover-scale animate-fade-in-delay-3">
+                  <button onClick={handleShareWhatsApp} className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition-all text-sm hover-scale animate-fade-in-delay-3">
                     Share on WhatsApp
                   </button>
                 </div>
