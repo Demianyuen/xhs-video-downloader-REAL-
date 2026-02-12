@@ -1,72 +1,99 @@
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "关于我们 - 小红书视频下载器",
-  description: "关于小红书视频下载器",
-};
+'use client';
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-[#f5f5f5]">
-      <div className="max-w-3xl mx-auto px-4 py-12">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h1 className="text-2xl font-bold text-gray-800 mb-6">关于我们</h1>
-
-          <div className="space-y-6 text-gray-600">
-            <section>
-              <h2 className="text-lg font-semibold text-gray-800 mb-3">我们的服务</h2>
-              <p>
-                小红书视频下载器是一个免费的在线工具，帮助用户下载小红书平台上的视频内容。我们致力于提供简单、快速、安全的下载体验。
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-lg font-semibold text-gray-800 mb-3">功能特点</h2>
-              <ul className="list-disc list-inside space-y-2">
-                <li>免费使用 - 每天可免费下载5个视频</li>
-                <li>无水印 - 下载原始高清视频</li>
-                <li>简单易用 - 粘贴链接即可下载</li>
-                <li>安全可靠 - 不保存任何用户数据</li>
-                <li>跨平台 - 支持电脑和手机浏览器</li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="text-lg font-semibold text-gray-800 mb-3">使用说明</h2>
-              <ol className="list-decimal list-inside space-y-2">
-                <li>打开小红书 App 或网页</li>
-                <li>找到想要下载的视频</li>
-                <li>点击分享按钮，复制链接</li>
-                <li>将链接粘贴到本网站的输入框</li>
-                <li>点击下载按钮</li>
-              </ol>
-            </section>
-
-            <section>
-              <h2 className="text-lg font-semibold text-gray-800 mb-3">免责声明</h2>
-              <p>
-                本工具仅供个人学习和研究使用。用户应尊重原创作者的版权，不得将下载的内容用于商业用途或侵犯他人权益。使用本工具即表示您同意遵守相关法律法规和平台规定。
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-lg font-semibold text-gray-800 mb-3">联系方式</h2>
-              <p>
-                如有问题或建议，欢迎通过以下方式联系我们：
-              </p>
-              <p className="mt-2">
-                邮箱：support@xhsdownloader.top
-              </p>
-            </section>
-          </div>
-
-          <div className="mt-8 pt-6 border-t">
-            <a href="/" className="text-pink-600 hover:text-pink-700 transition">
-              ← 返回首页
-            </a>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-orange-50">
+      <header className="bg-white shadow-sm border-b border-pink-100">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
+            About Us
+          </h1>
         </div>
-      </div>
+      </header>
+
+      <main className="max-w-4xl mx-auto px-4 py-12">
+        <div className="bg-white rounded-2xl shadow-lg p-8 space-y-8">
+          <section>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">About XHS Video Downloader</h2>
+            <p className="text-gray-600 text-lg">XHS Video Downloader is a free, fast, and easy-to-use online tool for downloading videos from Xiaohongshu (XHS) in multiple resolutions without registration or installation.</p>
+          </section>
+
+          <section>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Our Mission</h3>
+            <p className="text-gray-600">Our mission is to provide users with a simple, reliable, and secure way to download and save their favorite Xiaohongshu videos for personal use.</p>
+          </section>
+
+          <section>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Key Features</h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="p-4 bg-gradient-to-br from-pink-50 to-pink-100 rounded-lg">
+                <h4 className="font-bold text-gray-900 mb-2">🎁 100% Free</h4>
+                <p className="text-gray-600 text-sm">No hidden fees, no premium plans. Completely free forever.</p>
+              </div>
+              <div className="p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg">
+                <h4 className="font-bold text-gray-900 mb-2">⚡ Super Fast</h4>
+                <p className="text-gray-600 text-sm">Download videos in seconds with optimized servers.</p>
+              </div>
+              <div className="p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg">
+                <h4 className="font-bold text-gray-900 mb-2">🔒 100% Safe</h4>
+                <p className="text-gray-600 text-sm">No installation, no registration, no data collection.</p>
+              </div>
+              <div className="p-4 bg-gradient-to-br from-pink-50 to-pink-100 rounded-lg">
+                <h4 className="font-bold text-gray-900 mb-2">📱 All Devices</h4>
+                <p className="text-gray-600 text-sm">Works on desktop, mobile, tablet, and all browsers.</p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Our Values</h3>
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-bold text-gray-900 mb-2">Simplicity</h4>
+                <p className="text-gray-600">Technology should be simple and accessible to everyone.</p>
+              </div>
+              <div>
+                <h4 className="font-bold text-gray-900 mb-2">Privacy</h4>
+                <p className="text-gray-600">We respect your privacy and don't collect unnecessary data.</p>
+              </div>
+              <div>
+                <h4 className="font-bold text-gray-900 mb-2">Reliability</h4>
+                <p className="text-gray-600">We strive to provide a reliable service that works every time.</p>
+              </div>
+              <div>
+                <h4 className="font-bold text-gray-900 mb-2">Respect</h4>
+                <p className="text-gray-600">We respect copyright laws and encourage responsible use.</p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Legal Notice</h3>
+            <p className="text-gray-600 mb-4">XHS Video Downloader is for personal, non-commercial use only. Users are responsible for ensuring compliance with applicable laws and Xiaohongshu's terms of service.</p>
+            <p className="text-gray-600">For more information, see our <a href="/terms" className="text-pink-500 hover:text-pink-600 font-semibold">Terms of Service</a> and <a href="/privacy" className="text-pink-500 hover:text-pink-600 font-semibold">Privacy Policy</a>.</p>
+          </section>
+
+          <section>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Contact Us</h3>
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <p className="text-gray-700 mb-2"><strong>Email:</strong> support@xhsdownloader.top</p>
+              <p className="text-gray-700 mb-2"><strong>Website:</strong> https://xhs-downloader.vercel.app</p>
+              <p className="text-gray-700"><strong>Response Time:</strong> Within 24 hours</p>
+            </div>
+          </section>
+
+          <section>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Copyright & Attribution</h3>
+            <p className="text-gray-600">&copy; 2026 XHS Video Downloader. All rights reserved. XHS Video Downloader is not affiliated with, endorsed by, or associated with Xiaohongshu or any of its subsidiaries.</p>
+          </section>
+        </div>
+      </main>
+
+      <footer className="bg-white border-t border-gray-200 mt-12">
+        <div className="max-w-6xl mx-auto px-4 py-8 text-center text-gray-600 text-sm">
+          <p>&copy; 2026 XHS Video Downloader. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }
