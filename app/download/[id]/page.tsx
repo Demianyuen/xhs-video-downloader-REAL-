@@ -11,8 +11,10 @@ interface VideoData {
   transcript?: string;
   duration: number;
   thumbnail: string;
-  availableResolutions: string[];
+  availableResolutions?: string[];
 }
+
+const DEFAULT_RESOLUTIONS = ['1080p', '720p', '480p', '360p'];
 
 export default function DownloadPage() {
   const params = useParams();
@@ -22,18 +24,27 @@ export default function DownloadPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'video' | 'transcript'>('video');
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchVideoData = async () => {
       try {
         const response = await fetch(`/api/video/${videoId}`);
-        const data = await response.json();
-        setVideoData(data);
-        if (data.availableResolutions && data.availableResolutions.length > 0) {
-          setSelectedResolution(data.availableResolutions[0]);
+        if (!response.ok) {
+          throw new Error('Failed to load video data');
         }
-      } catch (error) {
-        console.error('Failed to fetch video data:', error);
+        const data = await response.json();
+
+        // Ensure availableResolutions has a default value
+        if (!data.availableResolutions || !Array.isArray(data.availableResolutions)) {
+          data.availableResolutions = DEFAULT_RESOLUTIONS;
+        }
+
+        setVideoData(data);
+        setSelectedResolution(data.availableResolutions[0] || '720p');
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to fetch video data';
+        setError(message);
       } finally {
         setLoading(false);
       }
@@ -68,133 +79,215 @@ export default function DownloadPage() {
     document.body.removeChild(element);
   };
 
+  const formatDuration = (seconds: number) => {
+    if (!seconds) return 'N/A';
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-orange-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading video...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-pink-200 border-t-pink-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Loading video...</p>
         </div>
       </div>
     );
   }
 
-  if (!videoData) {
+  if (error || !videoData) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <p className="text-red-600 text-xl">Failed to load video</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-orange-50">
+        <div className="text-center bg-white rounded-2xl p-8 shadow-lg max-w-md">
+          <p className="text-red-500 text-lg font-semibold mb-2">Unable to Load Video</p>
+          <p className="text-gray-600 text-sm">{error || 'The video data could not be retrieved. Please try again.'}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-orange-50 to-yellow-50">
       {/* Header */}
-      <header className="bg-yellow-400 shadow-md">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-gray-800">XHS Video Downloader</h1>
+      <header className="bg-white shadow-sm border-b border-pink-100">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">🎬</span>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
+              XHS Video Downloader
+            </h1>
+          </div>
+          <a href="/" className="text-gray-600 hover:text-gray-800 font-medium">
+            ← Back
+          </a>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Left Column: Video & Download Options */}
-          <div className="md:col-span-2">
-            {/* Video Preview */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
-              <img
-                src={videoData.thumbnail}
-                alt={videoData.title}
-                className="w-full h-96 object-cover bg-gray-200"
-              />
-              <div className="p-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">{videoData.title}</h2>
-                <p className="text-gray-600 mb-4">By {videoData.author}</p>
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Left Column: Video Preview & Download */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Video Preview Card */}
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="relative bg-gray-900 aspect-video overflow-hidden">
+                <img
+                  src={videoData.thumbnail}
+                  alt={videoData.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-4">
+                  <div className="text-white">
+                    <p className="text-sm font-medium opacity-90">Duration</p>
+                    <p className="text-lg font-bold">{formatDuration(videoData.duration)}</p>
+                  </div>
+                </div>
+              </div>
 
-                {/* Tabs */}
-                <div className="flex gap-4 mb-6 border-b">
-                  <button
-                    onClick={() => setActiveTab('video')}
-                    className={`pb-2 font-semibold transition ${
-                      activeTab === 'video'
-                        ? 'border-b-2 border-yellow-400 text-yellow-600'
-                        : 'text-gray-600 hover:text-gray-800'
-                    }`}
-                  >
-                    📥 Download Video
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('transcript')}
-                    className={`pb-2 font-semibold transition ${
-                      activeTab === 'transcript'
-                        ? 'border-b-2 border-yellow-400 text-yellow-600'
-                        : 'text-gray-600 hover:text-gray-800'
-                    }`}
-                  >
-                    📝 Transcript
-                  </button>
+              {/* Video Info */}
+              <div className="p-6 space-y-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2 line-clamp-2">
+                    {videoData.title}
+                  </h2>
+                  <p className="text-gray-600 flex items-center gap-2">
+                    <span>👤</span>
+                    <span className="font-medium">{videoData.author}</span>
+                  </p>
                 </div>
 
-                {/* Video Download Tab */}
+                {/* Video Stats */}
+                <div className="grid grid-cols-3 gap-4 py-4 border-y border-gray-200">
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-1">Quality</p>
+                    <p className="text-lg font-bold text-pink-500">1080p</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-1">Format</p>
+                    <p className="text-lg font-bold text-orange-500">MP4</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-1">Size</p>
+                    <p className="text-lg font-bold text-yellow-500">~50MB</p>
+                  </div>
+                </div>
+
+                {/* Download Section */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">
+                      Select Quality:
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {(videoData.availableResolutions || DEFAULT_RESOLUTIONS).map((res) => (
+                        <button
+                          key={res}
+                          onClick={() => setSelectedResolution(res)}
+                          className={`py-3 px-4 rounded-lg font-semibold transition-all ${
+                            selectedResolution === res
+                              ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-lg'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }`}
+                        >
+                          {res}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleDownload}
+                    className="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                  >
+                    ⬇️ Download Video ({selectedResolution})
+                  </button>
+
+                  <button
+                    onClick={handleCopyLink}
+                    className={`w-full py-3 rounded-xl font-semibold transition-all ${
+                      copied
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                    }`}
+                  >
+                    {copied ? '✓ Link Copied!' : '🔗 Copy Video Link'}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Tabs Section */}
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              {/* Tab Buttons */}
+              <div className="flex border-b border-gray-200">
+                <button
+                  onClick={() => setActiveTab('video')}
+                  className={`flex-1 py-4 px-6 font-semibold transition-all ${
+                    activeTab === 'video'
+                      ? 'bg-gradient-to-r from-pink-50 to-orange-50 border-b-2 border-pink-500 text-pink-600'
+                      : 'text-gray-600 hover:text-gray-800'
+                  }`}
+                >
+                  📥 Download Info
+                </button>
+                <button
+                  onClick={() => setActiveTab('transcript')}
+                  className={`flex-1 py-4 px-6 font-semibold transition-all ${
+                    activeTab === 'transcript'
+                      ? 'bg-gradient-to-r from-pink-50 to-orange-50 border-b-2 border-pink-500 text-pink-600'
+                      : 'text-gray-600 hover:text-gray-800'
+                  }`}
+                >
+                  📝 Transcript
+                </button>
+              </div>
+
+              {/* Tab Content */}
+              <div className="p-6">
                 {activeTab === 'video' && (
                   <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Select Resolution:
-                      </label>
-                      <select
-                        value={selectedResolution}
-                        onChange={(e) => setSelectedResolution(e.target.value)}
-                        className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-yellow-400 focus:outline-none"
-                      >
-                        {videoData.availableResolutions.map((res) => (
-                          <option key={res} value={res}>
-                            {res}
-                          </option>
-                        ))}
-                      </select>
+                    <div className="bg-gradient-to-r from-pink-50 to-orange-50 rounded-lg p-4 border border-pink-200">
+                      <h3 className="font-semibold text-gray-800 mb-3">Download Instructions:</h3>
+                      <ol className="space-y-2 text-sm text-gray-700">
+                        <li>1. Select your preferred video quality above</li>
+                        <li>2. Click the "Download Video" button</li>
+                        <li>3. Your browser will start downloading the file</li>
+                        <li>4. Save the file to your device</li>
+                      </ol>
                     </div>
-
-                    <button
-                      onClick={handleDownload}
-                      className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-bold py-3 rounded-lg transition"
-                    >
-                      ⬇️ Download Video ({selectedResolution})
-                    </button>
-
-                    <button
-                      onClick={handleCopyLink}
-                      className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition"
-                    >
-                      {copied ? '✓ Copied!' : '🔗 Copy Link'}
-                    </button>
+                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                      <p className="text-sm text-blue-800">
+                        💡 <strong>Tip:</strong> Higher resolutions provide better quality but take longer to download.
+                      </p>
+                    </div>
                   </div>
                 )}
 
-                {/* Transcript Tab */}
                 {activeTab === 'transcript' && (
                   <div className="space-y-4">
                     {videoData.transcript ? (
                       <>
-                        <div className="bg-gray-100 rounded-lg p-4 max-h-96 overflow-y-auto">
-                          <p className="text-gray-700 whitespace-pre-wrap text-sm leading-relaxed">
+                        <div className="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto border border-gray-200">
+                          <p className="text-gray-700 whitespace-pre-wrap text-sm leading-relaxed font-mono">
                             {videoData.transcript}
                           </p>
                         </div>
                         <button
                           onClick={handleTranscriptDownload}
-                          className="w-full bg-orange-400 hover:bg-orange-500 text-gray-800 font-bold py-3 rounded-lg transition"
+                          className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg hover:shadow-xl"
                         >
                           ⬇️ Download Transcript
                         </button>
                       </>
                     ) : (
-                      <p className="text-gray-600 text-center py-8">
-                        Transcript not available for this video. Try downloading the video first.
-                      </p>
+                      <div className="text-center py-12">
+                        <p className="text-gray-600 text-lg mb-2">📝 Transcript not available</p>
+                        <p className="text-gray-500 text-sm">
+                          Transcript generation is coming soon. Download the video first!
+                        </p>
+                      </div>
                     )}
                   </div>
                 )}
@@ -202,38 +295,61 @@ export default function DownloadPage() {
             </div>
           </div>
 
-          {/* Right Column: AI Features & Premium */}
-          <div className="md:col-span-1">
-            <div className="bg-white rounded-lg shadow-lg p-6 sticky top-4">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">✨ Features</h3>
-
-              <div className="space-y-3 mb-6">
-                <div className="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                  <p className="font-semibold text-gray-800">📋 Summary</p>
-                  <p className="text-sm text-gray-600">Coming soon</p>
-                </div>
-
-                <div className="p-3 bg-orange-50 rounded-lg border border-orange-200">
-                  <p className="font-semibold text-gray-800">🎯 Key Points</p>
-                  <p className="text-sm text-gray-600">Coming soon</p>
-                </div>
-
-                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <p className="font-semibold text-gray-800">⏱️ Timestamps</p>
-                  <p className="text-sm text-gray-600">Coming soon</p>
+          {/* Right Column: Features & Info */}
+          <div className="lg:col-span-1">
+            {/* Features Card */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-4 space-y-6">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <span>✨</span> Features
+                </h3>
+                <div className="space-y-3">
+                  <div className="p-4 bg-gradient-to-br from-pink-50 to-pink-100 rounded-lg border border-pink-200 hover:shadow-md transition-shadow">
+                    <p className="font-semibold text-gray-800 mb-1">📋 Summary</p>
+                    <p className="text-xs text-gray-600">AI-powered video summary</p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg border border-orange-200 hover:shadow-md transition-shadow">
+                    <p className="font-semibold text-gray-800 mb-1">🎯 Key Points</p>
+                    <p className="text-xs text-gray-600">Extract main topics</p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg border border-yellow-200 hover:shadow-md transition-shadow">
+                    <p className="font-semibold text-gray-800 mb-1">⏱️ Timestamps</p>
+                    <p className="text-xs text-gray-600">Jump to sections</p>
+                  </div>
                 </div>
               </div>
 
               {/* Share Section */}
-              <div className="border-t pt-4">
-                <h4 className="font-semibold text-gray-800 mb-3">Share</h4>
+              <div className="border-t border-gray-200 pt-6">
+                <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  <span>🔗</span> Share
+                </h4>
                 <div className="space-y-2">
-                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition text-sm">
+                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-all text-sm">
                     Share on Facebook
                   </button>
-                  <button className="w-full bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 rounded-lg transition text-sm">
+                  <button className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 rounded-lg transition-all text-sm">
                     Share on Twitter
                   </button>
+                  <button className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition-all text-sm">
+                    Share on WhatsApp
+                  </button>
+                </div>
+              </div>
+
+              {/* Info Section */}
+              <div className="border-t border-gray-200 pt-6">
+                <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                  <span>ℹ️</span> Info
+                </h4>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <p>
+                    <span className="font-semibold">Video ID:</span>
+                    <br />
+                    <code className="text-xs bg-gray-100 px-2 py-1 rounded break-all">
+                      {videoData.videoId}
+                    </code>
+                  </p>
                 </div>
               </div>
             </div>
@@ -242,9 +358,16 @@ export default function DownloadPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-6 mt-12">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <p>&copy; 2024 XHS Video Downloader. For personal use only.</p>
+      <footer className="bg-white border-t border-gray-200 mt-12">
+        <div className="max-w-7xl mx-auto px-4 py-8 text-center text-gray-600 text-sm">
+          <p>
+            Made with ❤️ for XHS lovers •
+            <a href="/privacy" className="text-pink-500 hover:text-pink-600 ml-1">Privacy</a> •
+            <a href="/terms" className="text-pink-500 hover:text-pink-600 ml-1">Terms</a>
+          </p>
+          <p className="mt-2 text-xs text-gray-500">
+            For personal use only. Please respect copyright and creators' rights.
+          </p>
         </div>
       </footer>
     </div>

@@ -1,0 +1,6 @@
+[2026-02-12T11:47:57.064Z] [INFO] Processing video | {"url":"https://www.xiaohongshu.com/explore/698da54e000000001503b040?xsec_token=ABl8MJnXXg17hVM4j71uVZwiptEPbxtbPhdlm6s_fj9Mg=&xsec_source=pc_feed","type":"download"}
+[2026-02-12T11:48:00.079Z] [INFO] Video stored | {"videoId":"video_1770896880079_17tfeb"}
+[2026-02-12T11:48:02.762Z] [INFO] Fetching video data | {"videoId":"video_1770896880079_17tfeb"}
+[2026-02-12T11:48:02.765Z] [WARN] Video not found | {"videoId":"video_1770896880079_17tfeb"}
+[2026-02-12T11:48:03.016Z] [INFO] Fetching video data | {"videoId":"video_1770896880079_17tfeb"}
+[2026-02-12T11:48:03.021Z] [WARN] Video not found | {"videoId":"video_1770896880079_17tfeb"}
