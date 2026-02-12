@@ -23,8 +23,8 @@ export default function DownloadPage() {
   const [selectedResolution, setSelectedResolution] = useState('720p');
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'video' | 'transcript'>('video');
-  const [copied, setCopied] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [downloading, setDownloading] = useState(false);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
 
   useEffect(() => {
     const fetchVideoData = async () => {
@@ -55,7 +55,29 @@ export default function DownloadPage() {
 
   const handleDownload = () => {
     if (!videoData) return;
-    window.open(videoData.videoUrl, '_blank');
+    setDownloading(true);
+    setDownloadSuccess(false);
+
+    try {
+      const url = new URL(videoData.videoUrl);
+      if (!['http:', 'https:'].includes(url.protocol)) {
+        setError('Invalid video URL');
+        setDownloading(false);
+        return;
+      }
+
+      window.open(url.toString(), '_blank', 'noopener,noreferrer');
+
+      // Show success message after 1.5 seconds
+      setTimeout(() => {
+        setDownloading(false);
+        setDownloadSuccess(true);
+        setTimeout(() => setDownloadSuccess(false), 3000);
+      }, 1500);
+    } catch (err) {
+      setError('Failed to download video');
+      setDownloading(false);
+    }
   };
 
   const handleCopyLink = () => {
@@ -137,6 +159,9 @@ export default function DownloadPage() {
                   src={videoData.thumbnail}
                   alt={videoData.title}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://via.placeholder.com/400x300?text=XHS+Video';
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-4">
                   <div className="text-white">
@@ -199,9 +224,23 @@ export default function DownloadPage() {
 
                   <button
                     onClick={handleDownload}
-                    className="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                    disabled={downloading}
+                    className="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    ⬇️ Download Video ({selectedResolution})
+                    {downloading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                        Downloading...
+                      </>
+                    ) : downloadSuccess ? (
+                      <>
+                        ✅ Download Started!
+                      </>
+                    ) : (
+                      <>
+                        ⬇️ Download Video ({selectedResolution})
+                      </>
+                    )}
                   </button>
 
                   <button
@@ -282,10 +321,13 @@ export default function DownloadPage() {
                         </button>
                       </>
                     ) : (
-                      <div className="text-center py-12">
-                        <p className="text-gray-600 text-lg mb-2">📝 Transcript not available</p>
-                        <p className="text-gray-500 text-sm">
-                          Transcript generation is coming soon. Download the video first!
+                      <div className="text-center py-12 bg-gradient-to-br from-orange-50 to-yellow-50 rounded-lg border-2 border-dashed border-orange-200">
+                        <p className="text-gray-600 text-lg mb-2">📝 Transcript Coming Soon</p>
+                        <p className="text-gray-500 text-sm mb-4">
+                          AI-powered transcription is being developed. Download the video first!
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          Expected: Q2 2026
                         </p>
                       </div>
                     )}

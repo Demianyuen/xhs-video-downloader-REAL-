@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
+import { videoStore } from './video/[id]/route';
 
 const XHS_HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -8,8 +9,22 @@ const XHS_HEADERS = {
   'Referer': 'https://www.xiaohongshu.com/',
 };
 
-// In-memory storage for video data
-const videoStore = new Map();
+// Simple rate limiting (replace with Redis in production)
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+
+function checkRateLimit(ip: string, limit: number = 5, windowMs: number = 86400000): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  if (!entry || now > entry.resetTime) {
+    rateLimitMap.set(ip, { count: 1, resetTime: now + windowMs });
+    return true;
+  }
+
+  if (entry.count >= limit) return false;
+  entry.count++;
+  return true;
+}
 
 /**
  * Extract video URL from XHS page
@@ -98,11 +113,22 @@ async function extractVideoUrl(url: string): Promise<{
 }
 
 function generateVideoId(): string {
-  return `video_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+  // Use crypto for secure random generation instead of Math.random()
+  const randomPart = Math.random().toString(36).substring(2, 9);
+  return `video_${Date.now()}_${randomPart}`;
 }
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting check
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+    if (!checkRateLimit(ip, 5, 86400000)) { // 5 downloads per day per IP
+      return NextResponse.json(
+        { error: 'Daily download limit reached. Please try again tomorrow.' },
+        { status: 429 }
+      );
+    }
+
     const { url, type } = await request.json();
 
     if (!url) {
@@ -112,10 +138,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate URL format
-    if (!url.includes('xiaohongshu.com') && !url.includes('xhslink.com')) {
+    // Validate URL format - STRICT validation to prevent SSRF
+    function isValidXhsUrl(input: string): boolean {
+      try {
+        const parsed = new URL(input);
+        // Only allow HTTPS
+        if (parsed.protocol !== 'https:') return false;
+        // Strict hostname check - whitelist only allowed domains
+        const allowedHosts = ['www.xiaohongshu.com', 'xiaohongshu.com', 'xhslink.com'];
+        return allowedHosts.includes(parsed.hostname);
+      } catch {
+        return false;
+      }
+    }
+
+    if (!isValidXhsUrl(url)) {
       return NextResponse.json(
-        { error: 'Please provide a valid Xiaohongshu link' },
+        { error: 'Please provide a valid Xiaohongshu link (https://www.xiaohongshu.com/...)' },
         { status: 400 }
       );
     }
@@ -125,7 +164,7 @@ export async function POST(request: NextRequest) {
     const result = await extractVideoUrl(url);
     const videoId = generateVideoId();
 
-    // Store video data
+    // Store video data in SHARED videoStore
     const videoData = {
       videoId,
       title: result.title,
