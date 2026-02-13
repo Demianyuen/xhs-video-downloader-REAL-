@@ -370,9 +370,9 @@ export async function getDataAttributes(page: Page, selector: string) {
     if (!element) return null
 
     const dataset: Record<string, string> = {}
-    Object.keys(element.attributes).forEach(key => {
-      const attr = element.attributes[key]
-      if (attr.name.startsWith('data-')) {
+    Object.keys(element.attributes).forEach((key: string) => {
+      const attr = element.attributes[parseInt(key)]
+      if (attr && attr.name.startsWith('data-')) {
         dataset[attr.name] = attr.value
       }
     })
