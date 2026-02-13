@@ -2,9 +2,14 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { AdSenseDisplay } from './components/ads/AdSenseDisplay';
+import { AffiliateLinks } from './components/ads/AffiliateLinks';
+import { AdContainer } from './components/ads/AdContainer';
+import { useAdSense } from '@/lib/hooks/useAdSense';
 
 export default function Home() {
   const router = useRouter();
+  const { showAds } = useAdSense();
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -182,6 +187,13 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Ad Section - After Features */}
+        {showAds && (
+          <AdContainer position="middle">
+            <AdSenseDisplay slotId="header_banner" format="horizontal" />
+          </AdContainer>
+        )}
+
         {/* Supported Formats */}
         <div className="bg-gradient-to-r from-pink-50 to-orange-50 rounded-2xl shadow-lg p-8 mb-12 border border-pink-200 animate-slide-in-up">
           <h3 className="text-2xl font-bold text-gray-900 mb-6">Supported Formats & Resolutions</h3>
@@ -212,6 +224,13 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        {/* Affiliate Links Section */}
+        {showAds && (
+          <AdContainer position="middle">
+            <AffiliateLinks />
+          </AdContainer>
+        )}
 
         {/* FAQ Section */}
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-12 animate-fade-in-delay-2">

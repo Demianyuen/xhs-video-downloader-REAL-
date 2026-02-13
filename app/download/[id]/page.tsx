@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import { AdSenseDisplay } from '@/app/components/ads/AdSenseDisplay';
+import { AffiliateLinks } from '@/app/components/ads/AffiliateLinks';
+import { AdContainer } from '@/app/components/ads/AdContainer';
+import { useAdSense } from '@/lib/hooks/useAdSense';
 
 interface VideoData {
   videoId: string;
@@ -18,6 +22,7 @@ const DEFAULT_RESOLUTIONS = ['1080p', '720p', '480p', '360p'];
 
 export default function DownloadPage() {
   const params = useParams();
+  const { showAds } = useAdSense();
   const videoId = params.id as string;
   const [videoData, setVideoData] = useState<VideoData | null>(null);
   const [selectedResolution, setSelectedResolution] = useState('720p');
@@ -420,6 +425,18 @@ export default function DownloadPage() {
           </div>
         </div>
       </main>
+
+      {/* Ad Section - After Main Content */}
+      {showAds && (
+        <>
+          <AdContainer position="middle">
+            <AdSenseDisplay slotId="results_banner" format="horizontal" />
+          </AdContainer>
+          <AdContainer position="middle">
+            <AffiliateLinks />
+          </AdContainer>
+        </>
+      )}
 
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-12">
