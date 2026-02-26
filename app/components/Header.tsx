@@ -34,18 +34,6 @@ export default function Header() {
             </Link>
           )}
           
-          {/* Pricing */}
-          <Link 
-            href="/pricing" 
-            className={`text-sm font-medium transition ${
-              pathname === '/pricing' 
-                ? 'text-pink-600' 
-                : 'text-gray-600 hover:text-pink-600'
-            }`}
-          >
-            升级会员
-          </Link>
-          
           {/* About */}
           <Link 
             href="/about" 
