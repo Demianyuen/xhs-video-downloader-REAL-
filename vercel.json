@@ -11,27 +11,24 @@
   "git": {
     "deploymentEnabled": true
   },
-  "routes": [
+  "headers": [
     {
-      "src": "/ads.txt",
-      "dest": "/public/ads.txt",
-      "headers": {
-        "Content-Type": "text/plain"
-      }
+      "source": "/ads.txt",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain"
+        }
+      ]
     },
     {
-      "src": "/robots.txt",
-      "dest": "/public/robots.txt",
-      "headers": {
-        "Content-Type": "text/plain"
-      }
-    },
-    {
-      "src": "/sitemap.xml",
-      "dest": "/public/sitemap.xml",
-      "headers": {
-        "Content-Type": "application/xml"
-      }
+      "source": "/robots.txt",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain"
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,27 @@
+# XHS Downloader - robots.txt
+User-agent: *
+Allow: /
+Allow: /download
+Allow: /analyze
+Allow: /pricing
+Allow: /api/test-links
+
+# Disallow sensitive paths
+Disallow: /api/
+Disallow: /admin/
+Disallow: /.next/
+
+# Sitemap
+Sitemap: https://xhsvideodownloader.com/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1
+
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
