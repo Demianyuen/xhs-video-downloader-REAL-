@@ -11,10 +11,8 @@
   "git": {
     "deploymentEnabled": true
   },
-  "headers": [
     {
       "source": "/ads.txt",
-      "headers": [
         {
           "key": "Content-Type",
           "value": "text/plain"
@@ -23,7 +21,6 @@
     },
     {
       "source": "/robots.txt",
-      "headers": [
         {
           "key": "Content-Type",
           "value": "text/plain"
