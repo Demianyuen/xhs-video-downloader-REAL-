@@ -10,22 +10,5 @@
   },
   "git": {
     "deploymentEnabled": true
-  },
-    {
-      "source": "/ads.txt",
-        {
-          "key": "Content-Type",
-          "value": "text/plain"
-        }
-      ]
-    },
-    {
-      "source": "/robots.txt",
-        {
-          "key": "Content-Type",
-          "value": "text/plain"
-        }
-      ]
-    }
-  ]
+  }
 }
