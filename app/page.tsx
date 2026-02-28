@@ -58,25 +58,19 @@ function HomeContent() {
     try {
       const response = await fetch('/api/download', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url }) });
       const data = await response.json();
-      if (data.success && data.token) {
+      if (data.success && data.videoUrl) {
         recordDownload();
         setUsage(getUsageStatus());
         setCooldown(15);
-        const downloadUrl = `/api/download/${data.token}`;
-        const filename = `${data.metadata?.title || 'video'}.mp4`;
-        const downloadResponse = await fetch(downloadUrl);
-        if (!downloadResponse.ok) throw new Error('Download failed');
-        const blob = await downloadResponse.blob();
-        const blobUrl = URL.createObjectURL(blob);
         const link = document.createElement('a');
-        link.href = blobUrl;
-        link.download = filename;
+        link.href = data.videoUrl;
+        link.download = `${data.title || 'xhs-video'}.mp4`;
+        link.target = '_blank';
         link.style.display = 'none';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
-        setUrl("");
+        setUrl('');
       } else {
         alert(t.error.downloadFailed + ': ' + (data.error || t.error.unknown));
       }
