@@ -1,28 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  async headers() {
-    return [
-      {
-        source: '/ads.txt',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'text/plain',
-          },
-        ],
-      },
-      {
-        source: '/robots.txt',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'text/plain',
-          },
-        ],
-      },
-    ];
-  },
+  // Static files in public/ are served automatically
+  // No special headers config needed for ads.txt/robots.txt
 };
 
 export default nextConfig;
