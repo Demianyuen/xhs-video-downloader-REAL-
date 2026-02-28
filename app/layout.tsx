@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Header from "./components/Header";
 
@@ -21,8 +22,6 @@ export const metadata: Metadata = {
   creator: "XHS Downloader",
   publisher: "XHS Downloader",
   robots: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
-  
-  // 地理位置和多语言支持
   alternates: {
     languages: {
       "zh-CN": "https://xhsvideodownloader.com/",
@@ -32,7 +31,6 @@ export const metadata: Metadata = {
     },
     canonical: "https://xhsvideodownloader.com/",
   },
-
   openGraph: {
     title: "小红书视频下载器 - 免费下载无水印视频",
     description: "免费在线下载小红书视频，无水印高清画质。支持所有小红书视频链接，一键下载到本地。",
@@ -51,27 +49,23 @@ export const metadata: Metadata = {
       },
     ],
   },
-
   twitter: {
     card: "summary_large_image",
     title: "小红书视频下载器 - 免费下载无水印视频",
     description: "免费在线下载小红书视频，无水印高清画质。",
     images: ["https://xhsvideodownloader.com/og-image.png"],
   },
-
   viewport: {
     width: "device-width",
     initialScale: 1,
     maximumScale: 5,
     userScalable: true,
   },
-
   formatDetection: {
     telephone: false,
     email: false,
     address: false,
   },
-
   colorScheme: "light dark",
 };
 
@@ -80,7 +74,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // JSON-LD 結構化數據
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -111,40 +104,21 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <head>
-        {/* 地理位置和語言元標籤 */}
         <meta name="geo.placename" content="Global" />
         <meta name="geo.region" content="CN" />
         <meta name="ICBM" content="39.9042,116.4074" />
-        
-        {/* 地理位置特定的 hreflang 標籤 */}
         <link rel="alternate" hrefLang="zh-CN" href="https://xhsvideodownloader.com/" />
         <link rel="alternate" hrefLang="zh-TW" href="https://xhsvideodownloader.com/" />
         <link rel="alternate" hrefLang="en" href="https://xhsvideodownloader.com/" />
         <link rel="alternate" hrefLang="x-default" href="https://xhsvideodownloader.com/" />
-
-        {/* Sitemap 和 Robots */}
         <link rel="sitemap" href="https://xhsvideodownloader.com/sitemap.xml" />
-
-        {/* Google AdSense Account */}
         <meta name="google-adsense-account" content="ca-pub-7935038704820292" />
-        {/* Google AdSense Script */}
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7935038704820292" crossOrigin="anonymous" />
-
-        {/* JSON-LD 結構化數據 */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-
-        {/* 搜索引擎驗證 */}
-        <meta name="google-site-verification" content="your-google-verification-code" />
-        <meta name="msvalidate.01" content="your-bing-verification-code" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7935038704820292" crossOrigin="anonymous"></script>
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={\`\${geistSans.variable} \${geistMono.variable} antialiased\`}>
         <Header />
-        <main>
-          {children}
-        </main>
+        <main>{children}</main>
+        <Script id="json-ld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </body>
     </html>
   );
