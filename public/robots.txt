@@ -3,7 +3,6 @@ User-agent: *
 Allow: /
 Allow: /download
 Allow: /analyze
-Allow: /pricing
 Allow: /api/test-links
 
 # Disallow sensitive paths
