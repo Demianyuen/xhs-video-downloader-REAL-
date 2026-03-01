@@ -1,17 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import Header from "./components/Header";
 
 export const metadata: Metadata = {
   title: "小红书视频下载器 - 免费下载无水印视频 | XHS Downloader",
@@ -86,11 +76,6 @@ export default function RootLayout({
       "priceCurrency": "USD",
       "availability": "https://schema.org/InStock"
     },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "ratingCount": "1000"
-    },
     "author": {
       "@type": "Organization",
       "name": "XHS Downloader",
@@ -106,10 +91,6 @@ export default function RootLayout({
         <meta name="geo.placename" content="Global" />
         <meta name="geo.region" content="CN" />
         <meta name="ICBM" content="39.9042,116.4074" />
-        <link rel="alternate" hrefLang="zh-CN" href="https://xhsvideodownloader.com/" />
-        <link rel="alternate" hrefLang="zh-TW" href="https://xhsvideodownloader.com/" />
-        <link rel="alternate" hrefLang="en" href="https://xhsvideodownloader.com/" />
-        <link rel="alternate" hrefLang="x-default" href="https://xhsvideodownloader.com/" />
         <link rel="sitemap" href="https://xhsvideodownloader.com/sitemap.xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -117,7 +98,8 @@ export default function RootLayout({
         <meta name="google-adsense-account" content="ca-pub-7935038704820292" />
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7935038704820292" crossOrigin="anonymous"></script>
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className="antialiased">
+        <Header />
         {children}
         <Script id="json-ld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </body>

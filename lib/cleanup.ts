@@ -8,7 +8,7 @@ import path from 'path';
 export async function cleanupExpiredDownloads(
   maxAgeMs: number = 10 * 60 * 1000 // 10 minutes default
 ): Promise<void> {
-  const tempDir = path.join(process.cwd(), 'temp');
+  const tempDir = path.join('/tmp', 'xhs-downloads');
   const now = Date.now();
 
   try {
@@ -53,7 +53,7 @@ export async function cleanupExpiredDownloads(
  * Run this when server starts to ensure clean state
  */
 export async function startupCleanup(): Promise<void> {
-  const tempDir = path.join(process.cwd(), 'temp');
+  const tempDir = path.join('/tmp', 'xhs-downloads');
 
   try {
     console.log('[Cleanup] Starting startup cleanup...');
@@ -75,7 +75,7 @@ export async function startupCleanup(): Promise<void> {
  * @param sessionId - Session ID to clean up
  */
 export async function cleanupSession(sessionId: string): Promise<void> {
-  const sessionPath = path.join(process.cwd(), 'temp', sessionId);
+  const sessionPath = path.join('/tmp', 'xhs-downloads', sessionId);
 
   try {
     await fs.rm(sessionPath, { recursive: true, force: true });
@@ -104,7 +104,7 @@ export function schedulePeriodicCleanup(
  * @returns Size in bytes
  */
 export async function getTempDirectorySize(): Promise<number> {
-  const tempDir = path.join(process.cwd(), 'temp');
+  const tempDir = path.join('/tmp', 'xhs-downloads');
   let totalSize = 0;
 
   try {

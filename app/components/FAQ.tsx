@@ -18,11 +18,11 @@ export function FAQ() {
     },
     {
       q: "Can I download images and carousels as well?",
-      a: "Yes, our downloader handles both video links and image carousels. Paste an image post link, and we'll extract all high-resolution images within it.",
+      a: "Currently our downloader supports video links. Paste a video post link and we'll extract the high-quality, watermark-free video file.",
     },
     {
       q: "Is there a limit to how many videos I can download?",
-      a: "Currently, we offer unlimited downloads for free users with our standard processing tier. For bulk API access, please check our pricing page.",
+      a: "Free users can download up to 5 videos per day with a 15-second cooldown between downloads. This helps us keep the service fast and reliable for everyone.",
     }
   ];
 
@@ -49,7 +49,7 @@ export function FAQ() {
           >
             <button
               onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-              className="w-full px-8 py-6 flex items-center justify-between text-left focus:outline-none"
+              className="w-full px-8 py-6 flex items-center justify-between text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F84F1D]/50"
             >
               <span className="text-lg font-medium text-white">{faq.q}</span>
               <ChevronDown
