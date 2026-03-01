@@ -4,5 +4,8 @@
   "framework": "nextjs",
   "git": {
     "deploymentEnabled": true
+  },
+  "env": {
+    "NPM_CONFIG_REGISTRY": "https://registry.npmjs.org/"
   }
 }
