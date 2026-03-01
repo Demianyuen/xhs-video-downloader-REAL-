@@ -7,5 +7,20 @@
   },
   "env": {
     "NPM_CONFIG_REGISTRY": "https://registry.npmjs.org/"
-  }
+  },
+  "headers": [
+    {
+      "source": "/ads.txt",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "text/plain"
+        }
+      ]
+    }
+  ]
 }
