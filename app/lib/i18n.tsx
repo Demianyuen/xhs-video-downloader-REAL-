@@ -8,7 +8,7 @@ export const translations = {
   'zh-Hant': {
     title: '小紅書視頻下載器',
     subtitle: '免費下載小紅書無水印視頻',
-    placeholder: '粘貼小紅書連結...',
+    placeholder: '粘貼小紅書視頻連結...',
     downloadBtn: '立即下載',
     downloading: '下載中...',
     cooldown: '秒後可再次下載',
