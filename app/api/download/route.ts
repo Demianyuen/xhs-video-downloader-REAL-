@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { extractVideoId, fetchXHSVideoInfo, getVideoDownloadUrl } from '@/lib/xhs-service';
+import { processXHSVideo } from '@/lib/video-processor';
 
 export async function POST(request: NextRequest) {
   try {
-    const { url, format = 'mp4' } = await request.json();
+    const { url, format = 'mp4', removeWatermark = true, extractTranscript = true } = await request.json();
 
     if (!url) {
       return NextResponse.json(
@@ -12,42 +14,52 @@ export async function POST(request: NextRequest) {
     }
 
     // Extract video ID from XHS URL
-    // XHS URLs typically look like: https://www.xiaohongshu.com/explore/xxx or https://xhslink.com/xxx
-    const videoIdMatch = url.match(/(?:xiaohongshu\.com|xhslink\.com)\/(?:explore\/)?([a-zA-Z0-9]+)/);
+    const videoId = extractVideoId(url);
     
-    if (!videoIdMatch) {
+    if (!videoId) {
       return NextResponse.json(
-        { success: false, error: 'Invalid XHS URL' },
+        { success: false, error: 'Invalid XHS URL. Please provide a valid Xiaohongshu video link.' },
         { status: 400 }
       );
     }
 
-    const videoId = videoIdMatch[1];
+    console.log(`[Download API] Processing video: ${videoId}`);
 
-    // TODO: Integrate with actual XHS download service
-    // For now, return a mock response
-    // In production, you would:
-    // 1. Use a library like yt-dlp or similar for XHS
-    // 2. Process the video (remove watermark, extract transcript)
-    // 3. Return the download URL
+    // Fetch video information
+    const videoInfo = await fetchXHSVideoInfo(videoId);
+    console.log(`[Download API] Video info fetched:`, videoInfo);
 
-    const mockDownloadUrl = `/api/download/${videoId}?format=${format}`;
+    // Process video (remove watermark, extract transcript)
+    const processedVideo = await processXHSVideo(videoId, {
+      removeWatermark,
+      extractTranscript,
+      format: format as 'mp4' | 'mp3' | 'webm',
+      quality: '1080p',
+    });
+
+    // Get download URL
+    const downloadUrl = await getVideoDownloadUrl(videoId, format);
 
     return NextResponse.json({
       success: true,
       videoId,
+      title: videoInfo.title,
+      author: videoInfo.author,
+      duration: `${Math.floor(videoInfo.duration / 60)}:${String(videoInfo.duration % 60).padStart(2, '0')}`,
       format,
-      downloadUrl: mockDownloadUrl,
-      title: `XHS Video ${videoId}`,
-      duration: '2:30',
-      quality: 'HD',
-      hasWatermark: false,
-      transcript: 'Sample transcript will be available here...',
+      quality: '1080p',
+      hasWatermark: videoInfo.hasWatermark,
+      watermarkRemoved: processedVideo.watermarkRemoved,
+      transcript: processedVideo.transcript,
+      downloadUrl,
+      thumbnailUrl: videoInfo.thumbnailUrl,
+      message: 'Video processed successfully! Click the download button to get your video.',
     });
   } catch (error) {
-    console.error('Download error:', error);
+    console.error('[Download API] Error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Failed to process video';
     return NextResponse.json(
-      { success: false, error: 'Failed to process video' },
+      { success: false, error: errorMessage },
       { status: 500 }
     );
   }
