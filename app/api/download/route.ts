@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { extractVideoId, fetchXHSVideoInfo, getVideoDownloadUrl } from '@/lib/xhs-service';
-import { processXHSVideo } from '@/lib/video-processor';
+import {
+  extractVideoId,
+  fetchXHSVideoInfo,
+  processXHSVideo,
+  cleanupTempFiles,
+} from '@/lib/xhs-service-production';
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,36 +29,48 @@ export async function POST(request: NextRequest) {
 
     console.log(`[Download API] Processing video: ${videoId}`);
 
-    // Fetch video information
-    const videoInfo = await fetchXHSVideoInfo(videoId);
-    console.log(`[Download API] Video info fetched:`, videoInfo);
+    try {
+      // Fetch video information
+      const videoInfo = await fetchXHSVideoInfo(videoId);
+      console.log(`[Download API] Video info fetched:`, videoInfo);
 
-    // Process video (remove watermark, extract transcript)
-    const processedVideo = await processXHSVideo(videoId, {
-      removeWatermark,
-      extractTranscript,
-      format: format as 'mp4' | 'mp3' | 'webm',
-      quality: '1080p',
-    });
+      // Process video (download, remove watermark, extract transcript)
+      const processedVideo = await processXHSVideo(videoId, {
+        removeWatermark,
+        extractTranscript,
+        format: format as 'mp4' | 'mp3' | 'webm',
+        quality: '1080p',
+      });
 
-    // Get download URL
-    const downloadUrl = await getVideoDownloadUrl(videoId, format);
+      // Generate download token (in production, this would be a signed URL)
+      const downloadToken = Buffer.from(JSON.stringify({
+        videoId,
+        timestamp: Date.now(),
+        path: processedVideo.downloadPath,
+      })).toString('base64');
 
-    return NextResponse.json({
-      success: true,
-      videoId,
-      title: videoInfo.title,
-      author: videoInfo.author,
-      duration: `${Math.floor(videoInfo.duration / 60)}:${String(videoInfo.duration % 60).padStart(2, '0')}`,
-      format,
-      quality: '1080p',
-      hasWatermark: videoInfo.hasWatermark,
-      watermarkRemoved: processedVideo.watermarkRemoved,
-      transcript: processedVideo.transcript,
-      downloadUrl,
-      thumbnailUrl: videoInfo.thumbnailUrl,
-      message: 'Video processed successfully! Click the download button to get your video.',
-    });
+      return NextResponse.json({
+        success: true,
+        videoId,
+        title: videoInfo.title,
+        author: videoInfo.author,
+        duration: `${Math.floor(videoInfo.duration / 60)}:${String(videoInfo.duration % 60).padStart(2, '0')}`,
+        format,
+        quality: '1080p',
+        hasWatermark: videoInfo.hasWatermark,
+        watermarkRemoved: processedVideo.watermarkRemoved,
+        transcript: processedVideo.transcript,
+        fileSize: processedVideo.fileSize,
+        downloadToken,
+        downloadUrl: `/api/download/${videoId}?token=${downloadToken}`,
+        thumbnailUrl: videoInfo.thumbnailUrl,
+        message: 'Video processed successfully! Click the download button to get your video.',
+      });
+    } catch (error) {
+      // Cleanup temp files on error
+      await cleanupTempFiles(videoId);
+      throw error;
+    }
   } catch (error) {
     console.error('[Download API] Error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Failed to process video';
