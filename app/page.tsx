@@ -1,25 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-
-interface VideoData {
-  videoId: string;
-  title: string;
-  author: string;
-  videoUrl: string;
-  thumbnail: string;
-}
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [videoData, setVideoData] = useState<VideoData | null>(null);
-  const [downloading, setDownloading] = useState(false);
-  const [removeWatermark, setRemoveWatermark] = useState(false);
-  const [includeTranscript, setIncludeTranscript] = useState(false);
 
-  const handleProcess = async () => {
+  const handleDownload = async () => {
     if (!url.trim()) {
       setError('Please paste a valid XHS URL');
       return;
@@ -27,29 +17,19 @@ export default function Home() {
 
     setLoading(true);
     setError('');
-    setVideoData(null);
 
     try {
       const response = await fetch('/api/download', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          url,
-          type: includeTranscript ? 'transcript' : 'download',
-          removeWatermark
-        }),
+        body: JSON.stringify({ url, type: 'download' }),
       });
 
       const data = await response.json();
 
       if (data.success) {
-        setVideoData({
-          videoId: data.videoId,
-          title: data.metadata.title,
-          author: data.metadata.author,
-          videoUrl: data.videoUrl,
-          thumbnail: data.metadata.thumbnail || 'https://via.placeholder.com/400x300?text=XHS+Video'
-        });
+        // Redirect to download page where user can choose options
+        router.push(`/download/${data.videoId}`);
       } else {
         setError(data.error || 'Failed to process video');
       }
@@ -57,31 +37,6 @@ export default function Home() {
       setError('Error processing video. Please try again.');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleDirectDownload = () => {
-    if (!videoData) return;
-
-    setDownloading(true);
-
-    try {
-      // Create a temporary anchor element to trigger download
-      const link = document.createElement('a');
-      link.href = videoData.videoUrl;
-      link.download = `${videoData.title}.mp4`;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      setTimeout(() => {
-        setDownloading(false);
-      }, 2000);
-    } catch (err) {
-      setError('Failed to download video');
-      setDownloading(false);
     }
   };
 
@@ -105,7 +60,7 @@ export default function Home() {
 
       {/* Hero Section - Centered Giant Input */}
       <main className="flex-1 flex items-center justify-center px-6 py-20">
-        <div className="w-full max-w-4xl">
+        <div className="w-full max-w-3xl">
           {/* Main Heading */}
           <div className="text-center mb-12">
             <h2 className="text-5xl font-bold text-gray-900 mb-4">
@@ -125,7 +80,7 @@ export default function Home() {
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="Paste Xiaohongshu URL here..."
                 className="w-full px-6 py-5 text-lg border-2 border-gray-200 rounded-lg focus:border-pink-500 focus:outline-none transition"
-                onKeyPress={(e) => e.key === 'Enter' && !loading && handleProcess()}
+                onKeyPress={(e) => e.key === 'Enter' && !loading && handleDownload()}
               />
 
               {error && (
@@ -134,30 +89,8 @@ export default function Home() {
                 </div>
               )}
 
-              {/* Feature Options */}
-              <div className="flex gap-4 flex-wrap">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={removeWatermark}
-                    onChange={(e) => setRemoveWatermark(e.target.checked)}
-                    className="w-5 h-5 text-pink-500 rounded focus:ring-pink-500"
-                  />
-                  <span className="text-sm font-medium text-gray-700">🚫 Remove Watermark</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={includeTranscript}
-                    onChange={(e) => setIncludeTranscript(e.target.checked)}
-                    className="w-5 h-5 text-orange-500 rounded focus:ring-orange-500"
-                  />
-                  <span className="text-sm font-medium text-gray-700">📝 Extract Transcript</span>
-                </label>
-              </div>
-
               <button
-                onClick={handleProcess}
+                onClick={handleDownload}
                 disabled={loading}
                 className="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-5 text-lg rounded-lg transition shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -167,88 +100,16 @@ export default function Home() {
                     Processing...
                   </span>
                 ) : (
-                  '🔍 Process Video'
+                  '⬇️ Download Video'
                 )}
               </button>
             </div>
           </div>
 
-          {/* Video Result Card */}
-          {videoData && (
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden animate-fade-in">
-              <div className="p-6">
-                <div className="flex gap-6">
-                  {/* Thumbnail */}
-                  <div className="flex-shrink-0">
-                    <img
-                      src={videoData.thumbnail}
-                      alt={videoData.title}
-                      className="w-48 h-32 object-cover rounded-lg"
-                      onError={(e) => {
-                        e.currentTarget.src = 'https://via.placeholder.com/400x300?text=XHS+Video';
-                      }}
-                    />
-                  </div>
-
-                  {/* Video Info */}
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
-                      {videoData.title}
-                    </h3>
-                    <p className="text-gray-600 flex items-center gap-2 mb-4">
-                      <span>👤</span>
-                      <span className="font-medium">{videoData.author}</span>
-                    </p>
-
-                    {/* Download Button */}
-                    <button
-                      onClick={handleDirectDownload}
-                      disabled={downloading}
-                      className="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-3 px-6 rounded-lg transition shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                    >
-                      {downloading ? (
-                        <>
-                          <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                          Downloading...
-                        </>
-                      ) : (
-                        <>
-                          ⬇️ Download Video
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Additional Info */}
-                {(removeWatermark || includeTranscript) && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <div className="flex gap-4 text-sm">
-                      {removeWatermark && (
-                        <div className="flex items-center gap-2 text-green-600">
-                          <span>✅</span>
-                          <span>Watermark removed</span>
-                        </div>
-                      )}
-                      {includeTranscript && (
-                        <div className="flex items-center gap-2 text-blue-600">
-                          <span>✅</span>
-                          <span>Transcript extracted</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
           {/* Simple Instructions */}
-          {!videoData && (
-            <div className="mt-8 text-center text-sm text-gray-500">
-              <p>Paste any Xiaohongshu video link above and click Process Video</p>
-            </div>
-          )}
+          <div className="text-center text-sm text-gray-500">
+            <p>Paste any Xiaohongshu video link above and click Download</p>
+          </div>
         </div>
       </main>
 
