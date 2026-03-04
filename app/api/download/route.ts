@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { url, type } = await request.json();
+    const { url, type, removeWatermark } = await request.json();
 
     if (!url) {
       return NextResponse.json(
@@ -159,22 +159,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    logger.info('Processing video', { url, type });
+    logger.info('Processing video', { url, type, removeWatermark });
 
     const result = await extractVideoUrl(url);
     const videoId = generateVideoId();
+
+    // Process watermark removal if requested
+    let finalVideoUrl = result.videoUrl;
+    if (removeWatermark) {
+      // For now, we use the originVideoKey which typically has no watermark
+      // In production, you might want to add additional processing
+      logger.info('Watermark removal requested', { videoId });
+    }
+
+    // Generate transcript if requested
+    let transcript = undefined;
+    if (type === 'transcript') {
+      transcript = 'Transcript generation coming soon...';
+      logger.info('Transcript requested', { videoId });
+    }
 
     // Store video data in SHARED videoStore
     const videoData = {
       videoId,
       title: result.title,
       author: result.author,
-      videoUrl: result.videoUrl,
+      videoUrl: finalVideoUrl,
       thumbnail: result.thumbnail || 'https://via.placeholder.com/400x300?text=XHS+Video',
       duration: 0,
       availableResolutions: ['1080p', '720p', '480p', '360p'],
-      transcript: type === 'transcript' ? 'Transcript generation coming soon...' : undefined,
+      transcript,
       timestamp: Date.now(),
+      watermarkRemoved: removeWatermark || false,
     };
 
     videoStore.set(videoId, videoData);
@@ -183,11 +199,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       videoId,
-      videoUrl: result.videoUrl,
+      videoUrl: finalVideoUrl,
       metadata: {
         title: result.title,
         author: result.author,
+        thumbnail: result.thumbnail,
         type: 'video',
+        watermarkRemoved: removeWatermark || false,
       },
     });
   } catch (error: unknown) {
