@@ -8,15 +8,30 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "XHS Video Downloader - Free Xiaohongshu Video Downloader",
-  description: "Free, fast Xiaohongshu video downloader. Download XHS videos without watermarks. No registration required.",
-  keywords: "xhs downloader, xiaohongshu downloader, xhs video download, 小红书下载",
+  title: "XHS Video Downloader - Free Xiaohongshu Video Downloader | 小红书视频下载",
+  description: "Free XHS video downloader. Download Xiaohongshu videos without watermark in HD quality. Fast, safe, and no registration required. 免费小红书视频下载器，无水印高清下载。",
+  keywords: "xhs downloader, xiaohongshu downloader, xhs video download, 小红书下载, 小红书视频下载, 小红书去水印, xhs无水印下载, xiaohongshu video download, red note downloader",
   authors: [{ name: "XHS Video Downloader" }],
   robots: "index, follow",
   openGraph: {
     title: "XHS Video Downloader - Free Xiaohongshu Video Downloader",
-    description: "Free, fast Xiaohongshu video downloader. No watermarks, no registration.",
+    description: "Download Xiaohongshu videos without watermark. Fast, free, and easy to use.",
     type: "website",
+    url: "https://xhsvideodownloader.com",
+    siteName: "XHS Video Downloader",
+    locale: "en_US",
+    alternateLocale: ["zh_CN"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "XHS Video Downloader - Free Xiaohongshu Video Downloader",
+    description: "Download Xiaohongshu videos without watermark. Fast, free, and easy to use.",
+  },
+  alternates: {
+    canonical: "https://xhsvideodownloader.com",
+  },
+  verification: {
+    google: "your-google-verification-code", // Replace with actual code from Google Search Console
   },
 };
 
