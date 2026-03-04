@@ -176,16 +176,19 @@ export default function DownloadPage() {
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-orange-50 to-yellow-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-pink-100">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-2xl">🎬</span>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
               XHS Video Downloader
             </h1>
           </div>
-          <a href="/" className="text-gray-600 hover:text-gray-800 font-medium">
-            ← Back
-          </a>
+          <nav className="flex gap-6 text-sm">
+            <a href="/" className="text-gray-600 hover:text-gray-900 transition">Home</a>
+            <a href="/blog" className="text-gray-600 hover:text-gray-900 transition">Blog</a>
+            <a href="/privacy" className="text-gray-600 hover:text-gray-900 transition">Privacy</a>
+            <a href="/terms" className="text-gray-600 hover:text-gray-900 transition">Terms</a>
+          </nav>
         </div>
       </header>
 
@@ -229,15 +232,15 @@ export default function DownloadPage() {
                 <div className="grid grid-cols-3 gap-4 py-4 border-y border-gray-200">
                   <div className="text-center">
                     <p className="text-sm text-gray-600 mb-1">Quality</p>
-                    <p className="text-lg font-bold text-pink-500">1080p</p>
+                    <p className="text-lg font-bold text-pink-500">{selectedResolution}</p>
                   </div>
                   <div className="text-center">
                     <p className="text-sm text-gray-600 mb-1">Format</p>
                     <p className="text-lg font-bold text-orange-500">MP4</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm text-gray-600 mb-1">Size</p>
-                    <p className="text-lg font-bold text-yellow-500">~50MB</p>
+                    <p className="text-sm text-gray-600 mb-1">Duration</p>
+                    <p className="text-lg font-bold text-yellow-500">{formatDuration(videoData.duration)}</p>
                   </div>
                 </div>
 
@@ -443,16 +446,15 @@ export default function DownloadPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-12">
-        <div className="max-w-7xl mx-auto px-4 py-8 text-center text-gray-600 text-sm">
-          <p>
-            Made with ❤️ for XHS lovers •
-            <a href="/privacy" className="text-pink-500 hover:text-pink-600 ml-1">Privacy</a> •
-            <a href="/terms" className="text-pink-500 hover:text-pink-600 ml-1">Terms</a>
-          </p>
-          <p className="mt-2 text-xs text-gray-500">
-            For personal use only. Please respect copyright and creators&apos; rights.
-          </p>
+      <footer className="border-t border-gray-100 py-8 mt-16">
+        <div className="max-w-7xl mx-auto px-6 text-center text-sm text-gray-500">
+          <div className="flex justify-center gap-6 mb-4">
+            <a href="/" className="hover:text-pink-500 transition">Home</a>
+            <a href="/blog" className="hover:text-pink-500 transition">Blog</a>
+            <a href="/privacy" className="hover:text-pink-500 transition">Privacy Policy</a>
+            <a href="/terms" className="hover:text-pink-500 transition">Terms of Service</a>
+          </div>
+          <p>© 2026 XHS Video Downloader. All rights reserved.</p>
         </div>
       </footer>
     </div>

@@ -2,14 +2,19 @@ export default function TermsOfService() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
-          <a href="/" className="text-xl font-semibold text-gray-900 hover:text-gray-700 transition">
-            XHS Video Downloader
-          </a>
-          <nav className="flex gap-8 text-sm">
+      <header className="bg-white shadow-sm border-b border-pink-100">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">🎬</span>
+            <a href="/" className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
+              XHS Video Downloader
+            </a>
+          </div>
+          <nav className="flex gap-6 text-sm">
             <a href="/" className="text-gray-600 hover:text-gray-900 transition">Home</a>
+            <a href="/blog" className="text-gray-600 hover:text-gray-900 transition">Blog</a>
             <a href="/privacy" className="text-gray-600 hover:text-gray-900 transition">Privacy</a>
+            <a href="/terms" className="text-gray-600 hover:text-gray-900 transition">Terms</a>
           </nav>
         </div>
       </header>
@@ -186,13 +191,14 @@ export default function TermsOfService() {
 
       {/* Footer */}
       <footer className="border-t border-gray-100 py-8 mt-16">
-        <div className="max-w-5xl mx-auto px-6 text-center text-sm text-gray-500">
+        <div className="max-w-7xl mx-auto px-6 text-center text-sm text-gray-500">
           <div className="flex justify-center gap-6 mb-4">
-            <a href="/" className="hover:text-gray-900 transition">Home</a>
-            <a href="/privacy" className="hover:text-gray-900 transition">Privacy Policy</a>
-            <a href="/terms" className="hover:text-gray-900 transition">Terms of Service</a>
+            <a href="/" className="hover:text-pink-500 transition">Home</a>
+            <a href="/blog" className="hover:text-pink-500 transition">Blog</a>
+            <a href="/privacy" className="hover:text-pink-500 transition">Privacy Policy</a>
+            <a href="/terms" className="hover:text-pink-500 transition">Terms of Service</a>
           </div>
-          <p>&copy; 2026 XHS Video Downloader. All rights reserved.</p>
+          <p>© 2026 XHS Video Downloader. All rights reserved.</p>
         </div>
       </footer>
     </div>

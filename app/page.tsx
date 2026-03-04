@@ -51,7 +51,9 @@ export default function Home() {
               XHS Video Downloader
             </h1>
           </div>
-          <nav className="flex gap-8 text-sm">
+          <nav className="flex gap-6 text-sm">
+            <a href="/" className="text-gray-600 hover:text-gray-900 transition">Home</a>
+            <a href="/blog" className="text-gray-600 hover:text-gray-900 transition">Blog</a>
             <a href="/privacy" className="text-gray-600 hover:text-gray-900 transition">Privacy</a>
             <a href="/terms" className="text-gray-600 hover:text-gray-900 transition">Terms</a>
           </nav>
@@ -168,13 +170,15 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-8">
-        <div className="max-w-5xl mx-auto px-6 text-center text-sm text-gray-500">
+      <footer className="border-t border-gray-100 py-8 mt-16">
+        <div className="max-w-7xl mx-auto px-6 text-center text-sm text-gray-500">
           <div className="flex justify-center gap-6 mb-4">
+            <a href="/" className="hover:text-pink-500 transition">Home</a>
+            <a href="/blog" className="hover:text-pink-500 transition">Blog</a>
             <a href="/privacy" className="hover:text-pink-500 transition">Privacy Policy</a>
             <a href="/terms" className="hover:text-pink-500 transition">Terms of Service</a>
           </div>
-          <p>&copy; 2026 XHS Video Downloader. For personal use only.</p>
+          <p>© 2026 XHS Video Downloader. All rights reserved.</p>
         </div>
       </footer>
     </div>

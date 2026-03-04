@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 export default function BlogPost() {
   return (
     <div className="min-h-screen bg-white">
-      <header className="border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+      <header className="bg-white shadow-sm border-b border-pink-100">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-2xl">🎬</span>
             <a href="/" className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
@@ -19,8 +19,10 @@ export default function BlogPost() {
             </a>
           </div>
           <nav className="flex gap-6 text-sm">
-            <a href="/" className="text-gray-600 hover:text-gray-900">Home</a>
-            <a href="/blog" className="text-gray-600 hover:text-gray-900">Blog</a>
+            <a href="/" className="text-gray-600 hover:text-gray-900 transition">Home</a>
+            <a href="/blog" className="text-gray-600 hover:text-gray-900 transition">Blog</a>
+            <a href="/privacy" className="text-gray-600 hover:text-gray-900 transition">Privacy</a>
+            <a href="/terms" className="text-gray-600 hover:text-gray-900 transition">Terms</a>
           </nav>
         </div>
       </header>
@@ -143,12 +145,12 @@ export default function BlogPost() {
       </main>
 
       <footer className="border-t border-gray-100 py-8 mt-16">
-        <div className="max-w-5xl mx-auto px-6 text-center text-sm text-gray-500">
+        <div className="max-w-7xl mx-auto px-6 text-center text-sm text-gray-500">
           <div className="flex justify-center gap-6 mb-4">
-            <a href="/" className="hover:text-pink-500">Home</a>
-            <a href="/blog" className="hover:text-pink-500">Blog</a>
-            <a href="/privacy" className="hover:text-pink-500">Privacy Policy</a>
-            <a href="/terms" className="hover:text-pink-500">Terms of Service</a>
+            <a href="/" className="hover:text-pink-500 transition">Home</a>
+            <a href="/blog" className="hover:text-pink-500 transition">Blog</a>
+            <a href="/privacy" className="hover:text-pink-500 transition">Privacy Policy</a>
+            <a href="/terms" className="hover:text-pink-500 transition">Terms of Service</a>
           </div>
           <p>© 2026 XHS Video Downloader. All rights reserved.</p>
         </div>
