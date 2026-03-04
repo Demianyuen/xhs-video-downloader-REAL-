@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     canonical: "https://xhsvideodownloader.com",
   },
   verification: {
-    google: "your-google-verification-code", // Replace with actual code from Google Search Console
+    google: "b74c2e3e158d7f83", // Google Search Console verification
   },
 };
 
@@ -42,6 +42,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Google Analytics 4 */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-6GDQLLJVJC"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-6GDQLLJVJC');
+          `}
+        </Script>
+
         {/* Google AdSense - IMPORTANT: Replace with your actual Publisher ID */}
         {/* Step 1: Go to https://www.google.com/adsense and get your Publisher ID */}
         {/* Step 2: Replace 'ca-pub-XXXXXXXXXXXXXXXX' below with your actual ID */}
