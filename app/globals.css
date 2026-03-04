@@ -23,3 +23,8 @@ body {
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out;
 }
+
+/* Chinese characters use Noto Sans SC */
+:lang(zh), .zh {
+  font-family: var(--font-sc), sans-serif;
+}

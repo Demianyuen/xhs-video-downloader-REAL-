@@ -55,7 +55,7 @@ export default function DownloadPage() {
     fetchVideoData();
   }, [videoId]);
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!videoData) return;
     setDownloading(true);
     setDownloadSuccess(false);
@@ -68,9 +68,30 @@ export default function DownloadPage() {
         return;
       }
 
-      window.open(url.toString(), '_blank', 'noopener,noreferrer');
+      // Try fetch+blob first for true download behavior
+      try {
+        const response = await fetch(url.toString(), { mode: 'cors' });
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = `${videoData.title || 'xhs-video'}.mp4`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+      } catch {
+        // CORS fallback: use anchor with download attribute
+        const link = document.createElement('a');
+        link.href = url.toString();
+        link.download = `${videoData.title || 'xhs-video'}.mp4`;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
 
-      // Show success message after 1.5 seconds
       setTimeout(() => {
         setDownloading(false);
         setDownloadSuccess(true);

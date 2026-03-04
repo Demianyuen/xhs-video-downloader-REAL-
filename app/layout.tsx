@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Noto_Sans, Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 
-const inter = Inter({
-  subsets: ["latin"],
-});
+const notoSans = Noto_Sans({ subsets: ["latin"], weight: ["400", "600", "700"] });
+const notoSansSC = Noto_Sans_SC({ subsets: ["chinese-simplified"], weight: ["400", "700"], variable: "--font-sc" });
 
 export const metadata: Metadata = {
   title: "XHS Video Downloader - Free Xiaohongshu Video Downloader | 小红书视频下载",
@@ -56,7 +55,7 @@ export default function RootLayout({
         />
         */}
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${notoSans.className} ${notoSansSC.variable} antialiased`}>
         {children}
       </body>
     </html>
