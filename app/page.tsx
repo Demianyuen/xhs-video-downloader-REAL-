@@ -98,11 +98,19 @@ export default function Home() {
         </div>
       </main>
 
-      {/* AdSense Space - Reserved for future */}
+      {/* AdSense Space - Uncomment after setting up AdSense */}
       <div className="py-8 border-t border-gray-100">
         <div className="max-w-5xl mx-auto px-6">
+          {/*
+          STEP 1: Get your AdSense Publisher ID from https://www.google.com/adsense
+          STEP 2: Update app/layout.tsx with your Publisher ID
+          STEP 3: Create an ad unit in AdSense dashboard and get the ad slot ID
+          STEP 4: Uncomment the line below and replace 'YOUR_AD_SLOT_ID' with your actual ad slot ID
+
+          <AdSense adSlot="YOUR_AD_SLOT_ID" adFormat="horizontal" />
+          */}
           <div className="h-24 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400 text-sm">
-            Advertisement Space
+            Advertisement Space (AdSense Placeholder)
           </div>
         </div>
       </div>
