@@ -7,16 +7,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "小红书视频下载器 - 免费下载无水印视频 | XHS Downloader",
-  description: "免费在线下载小红书视频，无水印高清画质。支持所有小红书视频链接，一键下载到本地。Free Xiaohongshu video downloader.",
-  keywords: "小红书下载,小红书视频下载,XHS下载器,小红书无水印,xiaohongshu downloader,红书视频保存",
+  title: "XHS Video Downloader - Free Xiaohongshu Video Downloader",
+  description: "Free, fast Xiaohongshu video downloader. Download XHS videos without watermarks. No registration required.",
+  keywords: "xhs downloader, xiaohongshu downloader, xhs video download, 小红书下载",
   authors: [{ name: "XHS Downloader" }],
   robots: "index, follow",
   openGraph: {
-    title: "小红书视频下载器 - 免费下载无水印视频",
-    description: "免费在线下载小红书视频，无水印高清画质。",
+    title: "XHS Video Downloader - Free Xiaohongshu Video Downloader",
+    description: "Free, fast Xiaohongshu video downloader. No watermarks, no registration.",
     type: "website",
-    locale: "zh_CN",
   },
 };
 
@@ -26,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN">
+    <html lang="en">
       <head>
         {/* Google AdSense - Replace ca-pub-XXXXXXX with your publisher ID after approval */}
         {/*
@@ -37,9 +36,7 @@ export default function RootLayout({
         />
         */}
       </head>
-      <body
-        className={`${inter.className} antialiased`}
-      >
+      <body className={`${inter.className} antialiased`}>
         {children}
       </body>
     </html>
