@@ -4,7 +4,7 @@ import "./globals.css";
 import Script from "next/script";
 
 const notoSans = Noto_Sans({ subsets: ["latin"], weight: ["400", "600", "700"] });
-const notoSansSC = Noto_Sans_SC({ subsets: ["chinese-simplified"], weight: ["400", "700"], variable: "--font-sc" });
+const notoSansSC = Noto_Sans_SC({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-sc" });
 
 export const metadata: Metadata = {
   title: "XHS Video Downloader - Free Xiaohongshu Video Downloader | 小红书视频下载",
