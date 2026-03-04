@@ -383,63 +383,67 @@ export default function DownloadPage() {
             </div>
           </div>
 
-          {/* Right Column: Features & Info */}
+          {/* Right Column: Info & Share */}
           <div className="lg:col-span-1">
-            {/* Features Card */}
-            <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-4 space-y-6 animate-slide-in-right">
+            <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-4 space-y-6">
+
+              {/* Tips */}
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <span>✨</span> Features
-                </h3>
-                <div className="space-y-3">
-                  <div className="p-4 bg-gradient-to-br from-pink-50 to-pink-100 rounded-lg border border-pink-200 hover:shadow-md transition-shadow hover-lift animate-fade-in-delay-1">
-                    <p className="font-semibold text-gray-800 mb-1">📋 Summary</p>
-                    <p className="text-xs text-gray-600">AI-powered video summary</p>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">💡 Tips</h3>
+                <div className="space-y-3 text-sm text-gray-600">
+                  <div className="flex gap-3">
+                    <span className="text-pink-500 font-bold flex-shrink-0">1.</span>
+                    <span>Select your preferred quality above</span>
                   </div>
-                  <div className="p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg border border-orange-200 hover:shadow-md transition-shadow hover-lift animate-fade-in-delay-2">
-                    <p className="font-semibold text-gray-800 mb-1">🎯 Key Points</p>
-                    <p className="text-xs text-gray-600">Extract main topics</p>
+                  <div className="flex gap-3">
+                    <span className="text-pink-500 font-bold flex-shrink-0">2.</span>
+                    <span>Click Download — file saves directly to your device</span>
                   </div>
-                  <div className="p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg border border-yellow-200 hover:shadow-md transition-shadow hover-lift animate-fade-in-delay-3">
-                    <p className="font-semibold text-gray-800 mb-1">⏱️ Timestamps</p>
-                    <p className="text-xs text-gray-600">Jump to sections</p>
+                  <div className="flex gap-3">
+                    <span className="text-pink-500 font-bold flex-shrink-0">3.</span>
+                    <span>If download doesn&apos;t start, try Copy Link and open in a new tab</span>
                   </div>
                 </div>
               </div>
 
               {/* Share Section */}
               <div className="border-t border-gray-200 pt-6">
-                <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                  <span>🔗</span> Share
-                </h4>
-                <div className="space-y-2">
-                  <button onClick={handleShareFacebook} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-all text-sm hover-scale animate-fade-in-delay-1">
-                    Share on Facebook
+                <h4 className="font-semibold text-gray-900 mb-3">📤 Share</h4>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    onClick={handleShareTwitter}
+                    className="flex flex-col items-center gap-1 p-3 bg-sky-50 hover:bg-sky-100 rounded-lg transition text-sky-600 text-xs font-medium"
+                  >
+                    <span className="text-lg">𝕏</span>
+                    Twitter
                   </button>
-                  <button onClick={handleShareTwitter} className="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 rounded-lg transition-all text-sm hover-scale animate-fade-in-delay-2">
-                    Share on Twitter
+                  <button
+                    onClick={handleShareFacebook}
+                    className="flex flex-col items-center gap-1 p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition text-blue-600 text-xs font-medium"
+                  >
+                    <span className="text-lg">f</span>
+                    Facebook
                   </button>
-                  <button onClick={handleShareWhatsApp} className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition-all text-sm hover-scale animate-fade-in-delay-3">
-                    Share on WhatsApp
+                  <button
+                    onClick={handleShareWhatsApp}
+                    className="flex flex-col items-center gap-1 p-3 bg-green-50 hover:bg-green-100 rounded-lg transition text-green-600 text-xs font-medium"
+                  >
+                    <span className="text-lg">💬</span>
+                    WhatsApp
                   </button>
                 </div>
               </div>
 
-              {/* Info Section */}
+              {/* Download Another */}
               <div className="border-t border-gray-200 pt-6">
-                <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                  <span>ℹ️</span> Info
-                </h4>
-                <div className="space-y-2 text-sm text-gray-600">
-                  <p>
-                    <span className="font-semibold">Video ID:</span>
-                    <br />
-                    <code className="text-xs bg-gray-100 px-2 py-1 rounded break-all">
-                      {videoData.videoId}
-                    </code>
-                  </p>
-                </div>
+                <a
+                  href="/"
+                  className="block w-full text-center bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-3 rounded-xl transition shadow-lg"
+                >
+                  ⬇️ Download Another Video
+                </a>
               </div>
+
             </div>
           </div>
         </div>
