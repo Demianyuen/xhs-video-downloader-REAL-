@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
+import Header from "./components/Header";
+import { I18nProvider } from "./lib/i18n";
+import FontProvider from "./components/FontProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,16 +17,50 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "小红书视频下载器 - 免费下载无水印视频 | XHS Downloader",
-  description: "免费在线下载小红书视频，无水印高清画质。支持所有小红书视频链接，一键下载到本地。Free Xiaohongshu video downloader.",
-  keywords: "小红书下载,小红书视频下载,XHS下载器,小红书无水印,xiaohongshu downloader,红书视频保存",
+  title: "XHS Video Downloader - Download Xiaohongshu Videos Free",
+  description: "Free online Xiaohongshu video downloader. Download XHS videos without watermark in HD quality. No registration required.",
+  keywords: "小红书下载,小红书视频下载,XHS下载器,小红书无水印,xiaohongshu downloader,xhs video downloader",
   authors: [{ name: "XHS Downloader" }],
-  robots: "index, follow",
+  creator: "XHS Downloader",
+  publisher: "XHS Downloader",
+  robots: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+  alternates: {
+    languages: {
+      "zh-CN": "https://xhsvideodownloader.com/",
+      "zh-TW": "https://xhsvideodownloader.com/",
+      "en": "https://xhsvideodownloader.com/",
+      "x-default": "https://xhsvideodownloader.com/",
+    },
+    canonical: "https://xhsvideodownloader.com/",
+  },
   openGraph: {
-    title: "小红书视频下载器 - 免费下载无水印视频",
-    description: "免费在线下载小红书视频，无水印高清画质。",
+    title: "XHS Video Downloader - Download Xiaohongshu Videos Free",
+    description: "Free online Xiaohongshu video downloader. Download XHS videos without watermark in HD quality.",
     type: "website",
     locale: "zh_CN",
+    alternateLocale: ["zh_TW", "en_US"],
+    url: "https://xhsvideodownloader.com/",
+    siteName: "XHS Downloader",
+    images: [
+      {
+        url: "https://xhsvideodownloader.com/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "XHS Downloader",
+        type: "image/png",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "XHS Video Downloader - Download Xiaohongshu Videos Free",
+    description: "Free online Xiaohongshu video downloader. No watermark, HD quality.",
+    images: ["https://xhsvideodownloader.com/og-image.png"],
+  },
+  formatDetection: {
+    telephone: false,
+    email: false,
+    address: false,
   },
 };
 
@@ -31,22 +69,65 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "XHS Downloader",
+    "description": "Free online Xiaohongshu video downloader",
+    "url": "https://xhsvideodownloader.com",
+    "applicationCategory": "UtilityApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "1000"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "XHS Downloader",
+      "url": "https://xhsvideodownloader.com"
+    },
+    "inLanguage": ["zh-CN", "zh-TW", "en"],
+    "areaServed": ["CN", "TW", "HK", "SG", "US", "GB", "AU", "CA"],
+  };
+
   return (
-    <html lang="zh-CN">
+    <html lang="zh-TW">
       <head>
-        {/* Google AdSense - Replace ca-pub-XXXXXXX with your publisher ID after approval */}
-        {/*
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
-          crossOrigin="anonymous"
+        <meta name="geo.placename" content="Global" />
+        <meta name="geo.region" content="CN" />
+        <link rel="alternate" hrefLang="zh-CN" href="https://xhsvideodownloader.com/" />
+        <link rel="alternate" hrefLang="zh-TW" href="https://xhsvideodownloader.com/" />
+        <link rel="alternate" hrefLang="en" href="https://xhsvideodownloader.com/" />
+        <link rel="alternate" hrefLang="x-default" href="https://xhsvideodownloader.com/" />
+        <link rel="sitemap" href="https://xhsvideodownloader.com/sitemap.xml" />
+        <meta name="google-adsense-account" content="ca-pub-7935038704820292" />
+        {/* Noto Sans fonts loaded at runtime for Chinese language support */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap"
+          rel="stylesheet"
         />
-        */}
+        <Script
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7935038704820292"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <I18nProvider>
+          <FontProvider>
+            <Header />
+            <main>{children}</main>
+          </FontProvider>
+        </I18nProvider>
+        <Script id="json-ld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </body>
     </html>
   );

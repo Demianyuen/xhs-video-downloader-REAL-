@@ -1,267 +1,289 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Download, Copy, Zap, Shield, Smartphone, Music, Video } from 'lucide-react';
+import { useState, useEffect, FormEvent } from "react";
+import { I18nProvider, useI18n, LanguageSwitcher } from "./lib/i18n";
+import { getUsageStatus, recordDownload, getMaxDailyDownloads, UsageStatus } from "@/lib/usage-limiter";
+import { Sparkles, Zap, Shield, Download, Loader2, BookOpen, Code, Globe } from "lucide-react";
 
-export default function Home() {
-  const [url, setUrl] = useState('');
-  const [language, setLanguage] = useState('en');
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
-  const [error, setError] = useState('');
+function HomeContent() {
+  const { t } = useI18n();
+  const [url, setUrl] = useState("");
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [usage, setUsage] = useState<UsageStatus | null>(null);
+  const [cooldown, setCooldown] = useState(0);
+  const [videoData, setVideoData] = useState<{ videoUrl: string; title: string } | null>(null);
+  const [isDownloadingFile, setIsDownloadingFile] = useState(false);
 
-  const translations = {
-    en: {
-      title: 'XHS Video Downloader',
-      subtitle: 'Download Xiaohongshu Videos - Free, Fast & No Watermark',
-      placeholder: 'Paste XHS video URL here...',
-      download: 'Download',
-      processing: 'Processing...',
-      features: ['One-Click Download', 'No Watermark', 'Lightning Fast', 'Multi-Format', 'HD Quality', 'No Sign-up'],
-      howWorks: 'How It Works',
-      step1: 'Paste URL',
-      step1Desc: 'Copy any XHS video link',
-      step2: 'Select Format',
-      step2Desc: 'Choose MP4, MP3 or WebM',
-      step3: 'Download',
-      step3Desc: 'Get your video instantly',
-      whyChoose: 'Why Choose XHS Downloader?',
-      faq: 'FAQ',
-      ready: 'Ready to Download?',
-      getStarted: 'Get Started Now',
-    },
-    'zh-TW': {
-      title: 'XHS 影片下載器',
-      subtitle: '下載小紅書影片 - 免費、快速、無水印',
-      placeholder: '在此貼上 XHS 影片連結...',
-      download: '下載',
-      processing: '處理中...',
-      features: ['一鍵下載', '無水印', '閃電快速', '多種格式', '高清品質', '無需註冊'],
-      howWorks: '工作原理',
-      step1: '貼上連結',
-      step1Desc: '複製任何 XHS 影片連結',
-      step2: '選擇格式',
-      step2Desc: '選擇 MP4、MP3 或 WebM',
-      step3: '下載',
-      step3Desc: '立即取得您的影片',
-      whyChoose: '為什麼選擇 XHS 下載器？',
-      faq: '常見問題',
-      ready: '準備好下載了嗎？',
-      getStarted: '立即開始',
-    },
-    'zh-CN': {
-      title: 'XHS 视频下载器',
-      subtitle: '下载小红书视频 - 免费、快速、无水印',
-      placeholder: '在此粘贴 XHS 视频链接...',
-      download: '下载',
-      processing: '处理中...',
-      features: ['一键下载', '无水印', '闪电快速', '多种格式', '高清品质', '无需注册'],
-      howWorks: '工作原理',
-      step1: '粘贴链接',
-      step1Desc: '复制任何 XHS 视频链接',
-      step2: '选择格式',
-      step2Desc: '选择 MP4、MP3 或 WebM',
-      step3: '下载',
-      step3Desc: '立即获取您的视频',
-      whyChoose: '为什么选择 XHS 下载器？',
-      faq: '常见问题',
-      ready: '准备好下载了吗？',
-      getStarted: '立即开始',
-    },
+  useEffect(() => {
+    setUsage(getUsageStatus());
+  }, []);
+
+  useEffect(() => {
+    if (cooldown > 0) {
+      const timer = setTimeout(() => {
+        setCooldown((prev) => prev - 1);
+        if (cooldown === 1) setUsage(getUsageStatus());
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldown]);
+
+  const extractXHUrl = (input: string): string => {
+    const xhsRegex = /https?:\/\/[^\s]*xiaohongshu\.com\/(?:explore|discovery\/item)\/[a-zA-Z0-9]+/;
+    const match = input.match(xhsRegex);
+    return match ? match[0] : input.trim();
   };
 
-  const t = translations[language as keyof typeof translations];
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawInput = e.target.value;
+    if (rawInput.includes('\n') || rawInput.includes(' ')) {
+      const extracted = extractXHUrl(rawInput);
+      setUrl(extracted);
+    } else {
+      setUrl(rawInput);
+    }
+  };
 
-  const handleDownload = async () => {
-    if (!url.trim()) {
-      setError('Please enter a valid XHS video URL');
+  const handleDownload = async (e: FormEvent) => {
+    e.preventDefault();
+    const cleanUrl = extractXHUrl(url);
+    if (!cleanUrl) { alert(t.error.emptyUrl); return; }
+
+    const currentUsage = getUsageStatus();
+    if (!currentUsage.canDownload) {
+      alert(currentUsage.isLimitReached
+        ? t.error.limitReached
+        : t.error.waitCooldown.replace('$0', String(currentUsage.cooldownRemaining)));
       return;
     }
 
-    setLoading(true);
-    setError('');
-    setResult(null);
-
+    setUrl(cleanUrl);
+    setIsDownloading(true);
+    setVideoData(null);
     try {
-      // Call the download API
       const response = await fetch('/api/download', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, format: 'mp4' }),
+        body: JSON.stringify({ url: cleanUrl }),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to process video');
-      }
-
       const data = await response.json();
-      setResult(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      if (data.success && data.videoUrl) {
+        recordDownload();
+        setUsage(getUsageStatus());
+        setCooldown(15);
+        setVideoData({ videoUrl: data.videoUrl, title: data.title || 'xhs-video' });
+        setUrl('');
+      } else {
+        alert(t.error.downloadFailed + ': ' + (data.error || t.error.unknown));
+      }
+    } catch (error) {
+      console.error('Download error:', error);
+      alert(t.error.downloadFailed + ' - ' + t.error.retry);
     } finally {
-      setLoading(false);
+      setIsDownloading(false);
     }
   };
 
+  const handleFileDownload = async () => {
+    if (!videoData) return;
+    setIsDownloadingFile(true);
+    try {
+      const res = await fetch(videoData.videoUrl);
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = objectUrl;
+      a.download = `${videoData.title}.mp4`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(objectUrl);
+    } catch {
+      alert(t.error.downloadFailed);
+    } finally {
+      setIsDownloadingFile(false);
+    }
+  };
+
+  const canDownload = usage?.canDownload && !isDownloading && cooldown === 0;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Navigation */}
-      <nav className="bg-black/30 backdrop-blur-md border-b border-purple-500/20">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">
-            XHS Downloader
+    <>
+      <main className="max-w-4xl mx-auto px-4 pt-8 sm:pt-12 pb-16">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 bg-pink-100 text-pink-700 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium mb-4">
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span>{t.badge}</span>
           </div>
-          <select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            className="px-3 py-2 bg-purple-900/50 border border-purple-500/30 rounded-lg text-white text-sm hover:border-purple-500 transition-colors"
-          >
-            <option value="en">English</option>
-            <option value="zh-TW">繁體中文</option>
-            <option value="zh-CN">简体中文</option>
-          </select>
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 px-2">{t.title}</h1>
+          <p className="text-base sm:text-lg text-gray-600 max-w-xl mx-auto px-2">{t.subtitle}</p>
         </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="max-w-6xl mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 text-white">
-            {t.title}
-          </h1>
-          <p className="text-xl text-purple-200 mb-8">
-            {t.subtitle}
-          </p>
-
-          {/* Main Input Section */}
-          <div className="bg-gradient-to-br from-purple-900/50 to-cyan-900/50 backdrop-blur-xl rounded-2xl border border-purple-500/30 p-8 mb-8 max-w-2xl mx-auto shadow-2xl">
-            <div className="flex gap-3 mb-4">
-              <input
-                type="text"
-                placeholder={t.placeholder}
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleDownload()}
-                className="flex-1 px-4 py-3 bg-black/30 border border-purple-500/50 rounded-lg text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
-              />
-              <button
-                onClick={handleDownload}
-                disabled={loading}
-                className="px-8 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-purple-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? t.processing : t.download}
-              </button>
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 border border-pink-100 mb-10">
+          {usage && (
+            <div className="flex items-center justify-center gap-1 sm:gap-2 mb-4 text-xs sm:text-sm text-gray-500 bg-gray-50 rounded-full py-2 px-3">
+              <span>{t.dailyLimit}:</span>
+              <span className="font-bold text-pink-600 text-base sm:text-lg">{usage.downloadsRemaining}</span>
+              <span className="text-gray-400">/ {getMaxDailyDownloads()}</span>
             </div>
-            {error && <p className="text-red-400 text-sm">{error}</p>}
-            {result && (
-              <div className="mt-4 p-4 bg-green-900/30 border border-green-500/50 rounded-lg">
-                <p className="text-green-300">✅ Video processed successfully!</p>
-                <a
-                  href={result.downloadUrl}
-                  download
-                  className="mt-2 inline-block px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                >
-                  Download Video
-                </a>
+          )}
+
+          <form onSubmit={handleDownload} className="space-y-3">
+            <input
+              type="text"
+              value={url}
+              onChange={handleInputChange}
+              placeholder={t.input.placeholder}
+              disabled={isDownloading || cooldown > 0}
+              className="w-full px-4 py-4 text-base sm:text-lg border-2 border-gray-200 rounded-xl focus:border-pink-500 transition outline-none disabled:bg-gray-50"
+            />
+
+            {cooldown > 0 && (
+              <div className="bg-pink-50 rounded-xl p-4 text-center">
+                <div className="text-3xl font-bold text-pink-600 mb-1">{cooldown}</div>
+                <p className="text-sm text-gray-600">{t.cooldown}</p>
               </div>
             )}
-          </div>
 
-          {/* Features Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12">
-            {t.features.map((feature, i) => (
-              <div
-                key={i}
-                className="bg-gradient-to-br from-purple-900/30 to-cyan-900/30 backdrop-blur border border-purple-500/20 rounded-lg p-4 hover:border-purple-500/50 transition-all"
+            <button
+              type="submit"
+              disabled={!canDownload}
+              className={`w-full py-4 px-6 rounded-xl font-bold text-base transition min-h-[52px] ${
+                canDownload ? 'bg-gradient-to-r from-pink-500 to-red-500 text-white' : 'bg-gray-200 text-gray-400'
+              }`}
+            >
+              {isDownloading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="w-5 h-5 animate-spin" /> {t.downloading}
+                </span>
+              ) : (
+                <span className="flex items-center justify-center gap-2">
+                  <Download className="w-5 h-5" /> {t.downloadBtn}
+                </span>
+              )}
+            </button>
+          </form>
+
+          {videoData && (
+            <div className="mt-6 bg-gray-50 rounded-2xl p-4 border border-pink-100">
+              <h3 className="font-semibold text-gray-800 mb-3 text-sm">{t.preview.title}</h3>
+              <video
+                src={videoData.videoUrl}
+                controls
+                className="w-full rounded-xl mb-3 max-h-64 bg-black"
+              />
+              <p className="text-sm text-gray-600 mb-3 truncate">{videoData.title}</p>
+              <button
+                onClick={handleFileDownload}
+                disabled={isDownloadingFile}
+                className="w-full py-3 px-6 rounded-xl font-bold text-sm bg-gradient-to-r from-pink-500 to-red-500 text-white disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                <p className="text-purple-200 font-semibold text-sm">{feature}</p>
+                <Download className="w-4 h-4" />
+                {isDownloadingFile ? t.preview.downloading : t.preview.downloadBtn}
+              </button>
+            </div>
+          )}
+
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-4 text-[10px] sm:text-xs text-gray-400">
+            <span className="flex items-center gap-1"><Shield className="w-3 h-3 text-green-500" /> {t.trust.ssl}</span>
+            <span className="flex items-center gap-1"><Zap className="w-3 h-3 text-yellow-500" /> {t.trust.free}</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center mb-12">
+          {[
+            { icon: Sparkles, title: t.features.free.title, desc: t.features.free.desc },
+            { icon: Zap, title: t.features.fast.title, desc: t.features.fast.desc },
+            { icon: Shield, title: t.features.safe.title, desc: t.features.safe.desc },
+          ].map((f, i) => (
+            <div key={i} className="bg-white rounded-xl p-5 border border-gray-100">
+              <f.icon className="w-6 h-6 text-pink-500 mx-auto mb-2" />
+              <h3 className="font-bold text-gray-800 mb-1 text-sm">{f.title}</h3>
+              <p className="text-xs text-gray-500">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-gradient-to-br from-gray-50 to-pink-50 rounded-2xl p-6 sm:p-10 mb-10">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 text-center">
+              {t.seo.heading}
+            </h2>
+
+            <div className="prose prose-lg max-w-none text-gray-700 space-y-6">
+              <section>
+                <div className="flex items-center gap-2 mb-3">
+                  <BookOpen className="w-5 h-5 text-pink-500" />
+                  <h3 className="text-xl font-bold text-gray-900">{t.seo.whatIsTitle}</h3>
+                </div>
+                <p className="leading-relaxed">{t.seo.whatIsP1}</p>
+                <p className="leading-relaxed mt-3">{t.seo.whatIsP2}</p>
+              </section>
+
+              <section>
+                <div className="flex items-center gap-2 mb-3">
+                  <Code className="w-5 h-5 text-pink-500" />
+                  <h3 className="text-xl font-bold text-gray-900">{t.seo.techTitle}</h3>
+                </div>
+                <p className="leading-relaxed">{t.seo.techIntro}</p>
+                <ol className="list-decimal list-inside space-y-2 ml-4 mt-3">
+                  {t.seo.techSteps.map((step, i) => <li key={i}>{step}</li>)}
+                </ol>
+                <p className="leading-relaxed mt-3">{t.seo.techOutro}</p>
+              </section>
+
+              <section>
+                <div className="flex items-center gap-2 mb-3">
+                  <Globe className="w-5 h-5 text-pink-500" />
+                  <h3 className="text-xl font-bold text-gray-900">{t.seo.formatsTitle}</h3>
+                </div>
+                <p className="leading-relaxed">{t.seo.formatsIntro}</p>
+                <ul className="list-disc list-inside space-y-2 ml-4 mt-3">
+                  {t.seo.formatsList.map((item, i) => <li key={i}>{item}</li>)}
+                </ul>
+                <p className="leading-relaxed mt-3">{t.seo.formatsOutro}</p>
+              </section>
+
+              <section>
+                <div className="flex items-center gap-2 mb-3">
+                  <Shield className="w-5 h-5 text-pink-500" />
+                  <h3 className="text-xl font-bold text-gray-900">{t.seo.privacyTitle}</h3>
+                </div>
+                <p className="leading-relaxed">{t.seo.privacyIntro}</p>
+                <ul className="list-disc list-inside space-y-2 ml-4 mt-3">
+                  {t.seo.privacyList.map((item, i) => <li key={i}>{item}</li>)}
+                </ul>
+                <p className="leading-relaxed mt-3">{t.seo.privacyOutro}</p>
+              </section>
+
+              <section>
+                <div className="flex items-center gap-2 mb-3">
+                  <Zap className="w-5 h-5 text-pink-500" />
+                  <h3 className="text-xl font-bold text-gray-900">{t.seo.tipsTitle}</h3>
+                </div>
+                <p className="leading-relaxed">{t.seo.tipsIntro}</p>
+                <ul className="list-disc list-inside space-y-2 ml-4 mt-3">
+                  {t.seo.tipsList.map((item, i) => <li key={i}>{item}</li>)}
+                </ul>
+              </section>
+
+              <div className="mt-8 p-4 bg-pink-50 rounded-xl border border-pink-200">
+                <p className="text-sm text-gray-600 text-center">
+                  {t.seo.legalNotice}
+                </p>
               </div>
-            ))}
+            </div>
           </div>
         </div>
+      </main>
+    </>
+  );
+}
 
-        {/* How It Works */}
-        <div className="bg-gradient-to-br from-purple-900/30 to-cyan-900/30 backdrop-blur-xl rounded-2xl border border-purple-500/30 p-8 mb-12 max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold mb-8 text-center text-white">{t.howWorks}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { step: '1', title: t.step1, desc: t.step1Desc, icon: '📋' },
-              { step: '2', title: t.step2, desc: t.step2Desc, icon: '⚙️' },
-              { step: '3', title: t.step3, desc: t.step3Desc, icon: '⬇️' },
-            ].map((item, i) => (
-              <div key={i} className="text-center">
-                <div className="text-4xl mb-3">{item.icon}</div>
-                <h3 className="font-semibold text-white mb-2">{item.title}</h3>
-                <p className="text-purple-200 text-sm">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Why Choose Us */}
-        <div className="bg-gradient-to-r from-pink-900/30 via-purple-900/30 to-cyan-900/30 backdrop-blur-xl rounded-2xl border border-purple-500/30 p-8 mb-12 max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6 text-white text-center">{t.whyChoose}</h2>
-          <ul className="space-y-3">
-            {[
-              '100% Free - No hidden charges',
-              'No Sign-up Required - Start immediately',
-              'No Watermarks - Clean videos',
-              'Multi-Language Support',
-              'Lightning Fast Downloads',
-              'Works on All Devices',
-            ].map((item, i) => (
-              <li key={i} className="flex items-center gap-3 text-purple-100">
-                <span className="text-cyan-400 font-bold">✓</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* FAQ */}
-        <div className="bg-gradient-to-br from-purple-900/30 to-cyan-900/30 backdrop-blur-xl rounded-2xl border border-purple-500/30 p-8 mb-12 max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6 text-white text-center">{t.faq}</h2>
-          <div className="space-y-4">
-            {[
-              { q: 'Is it really free?', a: 'Yes, 100% free with no hidden charges.' },
-              { q: 'Do I need to sign up?', a: 'No sign-up required. Just paste and download.' },
-              { q: 'Will videos have watermarks?', a: 'No, all videos are watermark-free.' },
-              { q: 'What formats are supported?', a: 'MP4, MP3, WebM and more formats.' },
-              { q: 'Is there a download limit?', a: 'No limits. Download as many as you want.' },
-              { q: 'Does it work on mobile?', a: 'Yes, works on all devices and browsers.' },
-            ].map((item, i) => (
-              <details key={i} className="border-b border-purple-500/20 pb-4">
-                <summary className="font-semibold text-white cursor-pointer hover:text-cyan-400 transition-colors">
-                  {item.q}
-                </summary>
-                <p className="text-purple-200 mt-2">{item.a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="bg-gradient-to-r from-pink-600 via-purple-600 to-cyan-600 rounded-2xl p-12 text-white text-center mb-12 shadow-2xl">
-          <h2 className="text-3xl font-bold mb-4">{t.ready}</h2>
-          <p className="text-lg mb-6 opacity-90">Start downloading XHS videos for free right now!</p>
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="px-8 py-3 bg-white text-purple-600 font-semibold rounded-lg hover:shadow-lg transition-all"
-          >
-            {t.getStarted}
-          </button>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-black/50 backdrop-blur border-t border-purple-500/20 py-8">
-        <div className="max-w-6xl mx-auto px-4 text-center text-purple-300">
-          <p className="mb-2">© 2026 XHS Downloader. All rights reserved.</p>
-          <p className="text-sm">
-            XHS Downloader is an independent service and is not affiliated with Xiaohongshu or ByteDance.
-          </p>
-        </div>
-      </footer>
-    </div>
+export default function Home() {
+  return (
+    <I18nProvider>
+      <HomeContent />
+    </I18nProvider>
   );
 }
