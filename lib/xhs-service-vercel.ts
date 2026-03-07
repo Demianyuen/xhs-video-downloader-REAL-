@@ -64,61 +64,43 @@ export function extractVideoId(url: string): string | null {
  * Uses a reliable video download API service
  */
 export async function fetchXHSVideoInfo(videoId: string): Promise<XHSVideoInfo> {
-  try {
-    console.log(`[XHS Service] Fetching video info for: ${videoId}`);
+  console.log(`[XHS Service] Fetching video info for: ${videoId}`);
 
-    // Option 1: Use a dedicated XHS API service
-    // Example: https://api.xhsdownloader.com/api/video/info
-    const apiUrl = `${process.env.XHS_API_BASE_URL || 'https://api.xhsdownloader.com'}/api/video/info`;
-    
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.XHS_API_KEY || ''}`,
-      },
-      body: JSON.stringify({ videoId }),
-    });
+  // DEMO MODE: Return mock data with sample video
+  // This allows the UI to work without a real XHS API
+  const mockTitles = [
+    '小紅書美食分享 - 超好吃的甜點推薦',
+    '旅遊Vlog - 探索台北隱藏景點',
+    '美妝教學 - 日常妝容分享',
+    '健身日常 - 居家運動指南',
+    '穿搭分享 - 春季時尚搭配',
+  ];
 
-    if (!response.ok) {
-      throw new Error(`API error: ${response.statusText}`);
-    }
+  const mockAuthors = [
+    '美食探險家',
+    '旅行達人',
+    '美妝博主',
+    '健身教練',
+    '時尚達人',
+  ];
 
-    const data = await response.json();
+  const randomIndex = Math.floor(Math.random() * mockTitles.length);
 
-    const videoInfo: XHSVideoInfo = {
-      videoId,
-      title: data.title || `XHS Video - ${videoId}`,
-      author: data.author || 'XHS Creator',
-      duration: data.duration || 150,
-      downloadUrl: data.downloadUrl || '',
-      thumbnailUrl: data.thumbnailUrl || '',
-      hasWatermark: data.hasWatermark !== false,
-      description: data.description || '',
-      platform: 'xiaohongshu',
-    };
+  // Use a real sample video URL (Big Buck Bunny - open source test video)
+  const sampleVideoUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+  const sampleThumbnail = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg';
 
-    return videoInfo;
-  } catch (error) {
-    console.error('[XHS Service] Error fetching video info:', error);
-    
-    // Fallback: Return mock data for development
-    if (process.env.NODE_ENV === 'development') {
-      return {
-        videoId,
-        title: `XHS Video - ${videoId}`,
-        author: 'XHS Creator',
-        duration: 150,
-        downloadUrl: `https://xhs-video-cdn.example.com/${videoId}.mp4`,
-        thumbnailUrl: `https://xhs-cdn.example.com/thumb/${videoId}.jpg`,
-        hasWatermark: true,
-        description: 'Sample XHS video description',
-        platform: 'xiaohongshu',
-      };
-    }
-    
-    throw new Error('Failed to fetch video information');
-  }
+  return {
+    videoId,
+    title: mockTitles[randomIndex],
+    author: mockAuthors[randomIndex],
+    duration: 120 + Math.floor(Math.random() * 180), // 2-5 minutes
+    downloadUrl: sampleVideoUrl,
+    thumbnailUrl: sampleThumbnail,
+    hasWatermark: false,
+    description: '這是一個示範視頻，展示下載功能如何運作。實際使用時將下載真實的小紅書視頻。',
+    platform: 'xiaohongshu',
+  };
 }
 
 /**
@@ -129,35 +111,11 @@ export async function getDownloadUrl(
   videoUrl: string,
   options: { removeWatermark?: boolean; format?: string } = {}
 ): Promise<string> {
-  try {
-    console.log(`[XHS Service] Getting download URL for: ${videoUrl}`);
+  console.log(`[XHS Service] Getting download URL for: ${videoUrl}`);
 
-    // Use a video download API service
-    const apiUrl = `${process.env.VIDEO_DOWNLOAD_API || 'https://api.videodl.com'}/download`;
-    
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.VIDEO_DOWNLOAD_API_KEY || ''}`,
-      },
-      body: JSON.stringify({
-        url: videoUrl,
-        removeWatermark: options.removeWatermark,
-        format: options.format || 'mp4',
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Download API error: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    return data.downloadUrl;
-  } catch (error) {
-    console.error('[XHS Service] Error getting download URL:', error);
-    throw new Error('Failed to get download URL');
-  }
+  // DEMO MODE: Return the video URL directly
+  // In production, this would process the video through a watermark removal service
+  return videoUrl;
 }
 
 /**
@@ -167,39 +125,26 @@ export async function extractTranscript(
   videoUrl: string,
   language: string = 'zh'
 ): Promise<string> {
-  try {
-    console.log(`[XHS Service] Extracting transcript from: ${videoUrl}`);
+  console.log(`[XHS Service] Extracting transcript from: ${videoUrl}`);
 
-    // Use OpenAI Whisper API
-    const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY || ''}`,
-      },
-      body: new FormData(),
-    });
+  // DEMO MODE: Return mock transcript
+  const mockTranscripts = [
+    `[00:00] 大家好，歡迎來到我的小紅書頻道
+[00:05] 今天要跟大家分享一些很棒的內容
+[00:10] 希望大家會喜歡這個視頻
+[00:15] 記得點讚和關注哦`,
+    `[00:00] Hello everyone, welcome to my channel
+[00:05] Today I want to share something interesting
+[00:10] Hope you enjoy this video
+[00:15] Don't forget to like and subscribe`,
+    `[00:00] 這是一個示範字幕
+[00:05] 展示字幕提取功能
+[00:10] 實際使用時會提取真實字幕
+[00:15] 感謝觀看`,
+  ];
 
-    if (!response.ok) {
-      throw new Error(`Whisper API error: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    return data.text || '';
-  } catch (error) {
-    console.error('[XHS Service] Transcript extraction error:', error);
-    
-    // Fallback: Return mock transcript for development
-    if (process.env.NODE_ENV === 'development') {
-      return `
-[00:00] 大家好，欢迎来到小红书
-[00:05] 今天我想分享一些有趣的内容
-[00:10] 希望大家喜欢
-[00:15] 感谢观看
-      `.trim();
-    }
-    
-    throw new Error('Failed to extract transcript');
-  }
+  const randomIndex = Math.floor(Math.random() * mockTranscripts.length);
+  return mockTranscripts[randomIndex];
 }
 
 /**
