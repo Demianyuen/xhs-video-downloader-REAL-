@@ -1,6 +1,6 @@
 'use client';
 
-import { I18nProvider, useI18n } from '@/app/lib/i18n';
+import { useI18n } from '@/app/lib/i18n';
 
 function TermsContent() {
   const { locale } = useI18n();
@@ -74,5 +74,5 @@ function TermsContent() {
 }
 
 export default function TermsOfService() {
-  return <I18nProvider><TermsContent /></I18nProvider>;
+  return <TermsContent />;
 }

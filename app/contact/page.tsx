@@ -1,6 +1,6 @@
 'use client';
 
-import { I18nProvider, useI18n } from '@/app/lib/i18n';
+import { useI18n } from '@/app/lib/i18n';
 
 function ContactContent() {
   const { locale } = useI18n();
@@ -75,5 +75,5 @@ function ContactContent() {
 }
 
 export default function Contact() {
-  return <I18nProvider><ContactContent /></I18nProvider>;
+  return <ContactContent />;
 }

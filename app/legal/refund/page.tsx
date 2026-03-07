@@ -1,6 +1,6 @@
 'use client';
 
-import { I18nProvider, useI18n } from '@/app/lib/i18n';
+import { useI18n } from '@/app/lib/i18n';
 
 function RefundContent() {
   const { locale } = useI18n();
@@ -56,5 +56,5 @@ function RefundContent() {
 }
 
 export default function RefundPolicy() {
-  return <I18nProvider><RefundContent /></I18nProvider>;
+  return <RefundContent />;
 }

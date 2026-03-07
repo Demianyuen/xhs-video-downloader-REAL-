@@ -1,6 +1,6 @@
 'use client';
 
-import { I18nProvider, useI18n } from '@/app/lib/i18n';
+import { useI18n } from '@/app/lib/i18n';
 
 function PrivacyContent() {
   const { locale } = useI18n();
@@ -68,5 +68,5 @@ function PrivacyContent() {
 }
 
 export default function PrivacyPolicy() {
-  return <I18nProvider><PrivacyContent /></I18nProvider>;
+  return <PrivacyContent />;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, FormEvent } from "react";
-import { I18nProvider, useI18n, LanguageSwitcher } from "./lib/i18n";
+import { useI18n } from "./lib/i18n";
 import { getUsageStatus, recordDownload, getMaxDailyDownloads, UsageStatus } from "@/lib/usage-limiter";
 import { Sparkles, Zap, Shield, Download, Loader2, BookOpen, Code, Globe } from "lucide-react";
 
@@ -281,9 +281,5 @@ function HomeContent() {
 }
 
 export default function Home() {
-  return (
-    <I18nProvider>
-      <HomeContent />
-    </I18nProvider>
-  );
+  return <HomeContent />;
 }
