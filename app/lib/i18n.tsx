@@ -47,7 +47,7 @@ export const translations = {
       about: '關於',
       backToHome: '返回首頁',
     },
-    badge: '2025 最新版',
+    badge: '',
     input: {
       placeholder: '粘貼小紅書連結（自動提取）...',
     },
@@ -146,7 +146,7 @@ export const translations = {
       about: '关于',
       backToHome: '返回首页',
     },
-    badge: '2025 最新版',
+    badge: '',
     input: {
       placeholder: '粘贴小红书链接（自动提取）...',
     },
@@ -245,7 +245,7 @@ export const translations = {
       about: 'About',
       backToHome: 'Back to Home',
     },
-    badge: 'Latest 2025',
+    badge: '',
     input: {
       placeholder: 'Paste Xiaohongshu link (auto-extracted)...',
     },
