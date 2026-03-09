@@ -67,11 +67,11 @@ function HomeContent() {
         body: JSON.stringify({ url: cleanUrl }),
       });
       const data = await response.json();
-      if (data.success && data.videoUrl) {
+      if (data.success && data.downloadUrl) {
         recordDownload();
         setUsage(getUsageStatus());
         setCooldown(15);
-        setVideoData({ videoUrl: data.videoUrl, title: data.title || 'xhs-video' });
+        setVideoData({ videoUrl: data.downloadUrl, title: data.title || 'xhs-video' });
         setUrl('');
       } else {
         alert(t.error.downloadFailed + ': ' + (data.error || t.error.unknown));
