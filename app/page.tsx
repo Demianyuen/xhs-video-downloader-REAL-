@@ -4,6 +4,7 @@ import { useState, useEffect, FormEvent } from "react";
 import { useI18n } from "./lib/i18n";
 import { getUsageStatus, recordDownload, getMaxDailyDownloads, UsageStatus } from "@/lib/usage-limiter";
 import { Sparkles, Zap, Shield, Download, Loader2, BookOpen, Code, Globe } from "lucide-react";
+import AdSense from "@/components/AdSense";
 
 function HomeContent() {
   const { t } = useI18n();
@@ -273,6 +274,17 @@ function HomeContent() {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* AdSense Ad Placement - Top Banner */}
+        <div className="mt-8 max-w-4xl mx-auto px-4">
+          <div className="bg-gray-50 rounded-xl p-4 border border-pink-100">
+            <AdSense
+              adSlot="YOUR_AD_SLOT_ID_1"
+              adFormat="horizontal"
+              style={{ display: 'block', minHeight: '90px' }}
+            />
           </div>
         </div>
       </main>
