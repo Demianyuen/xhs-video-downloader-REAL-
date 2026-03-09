@@ -11,7 +11,7 @@ function HomeContent() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [usage, setUsage] = useState<UsageStatus | null>(null);
   const [cooldown, setCooldown] = useState(0);
-  const [videoData, setVideoData] = useState<{ videoUrl: string; title: string } | null>(null);
+  const [videoData, setVideoData] = useState<{ downloadUrl: string; title: string } | null>(null);
   const [isDownloadingFile, setIsDownloadingFile] = useState(false);
 
   useEffect(() => {
@@ -71,7 +71,7 @@ function HomeContent() {
         recordDownload();
         setUsage(getUsageStatus());
         setCooldown(15);
-        setVideoData({ videoUrl: data.downloadUrl, title: data.title || 'xhs-video' });
+        setVideoData({ downloadUrl: data.downloadUrl, title: data.title || 'xhs-video' });
         setUrl('');
       } else {
         alert(t.error.downloadFailed + ': ' + (data.error || t.error.unknown));
@@ -88,7 +88,7 @@ function HomeContent() {
     if (!videoData) return;
     setIsDownloadingFile(true);
     try {
-      const res = await fetch(videoData.videoUrl);
+      const res = await fetch(videoData.downloadUrl);
       const blob = await res.blob();
       const objectUrl = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -168,7 +168,7 @@ function HomeContent() {
             <div className="mt-6 bg-gray-50 rounded-2xl p-4 border border-pink-100">
               <h3 className="font-semibold text-gray-800 mb-3 text-sm">{t.preview.title}</h3>
               <video
-                src={videoData.videoUrl}
+                src={videoData.downloadUrl}
                 controls
                 className="w-full rounded-xl mb-3 max-h-64 bg-black"
               />
