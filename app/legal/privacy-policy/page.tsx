@@ -8,7 +8,7 @@ function PrivacyContent() {
   const isHans = locale === 'zh-Hans';
 
   const title = isEn ? 'Privacy Policy' : isHans ? '隐私权政策' : '隱私權政策';
-  const lastUpdated = isEn ? 'Last updated: February 24, 2026' : isHans ? '最后更新：2026 年 2 月 24 日' : '最後更新：2026 年 2 月 24 日';
+  const lastUpdated = isEn ? 'Last updated: March 10, 2026' : isHans ? '最后更新：2026 年 3 月 10 日' : '最後更新：2026 年 3 月 10 日';
 
   const sections = isEn ? [
     { title: '1. Introduction', content: 'XHS Downloader ("the Service") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and protect your personal information.' },

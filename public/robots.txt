@@ -1,0 +1,25 @@
+# robots.txt for XHS Video Downloader
+
+User-agent: *
+Allow: /
+
+# Disallow API routes
+Disallow: /api/
+
+# Disallow private directories
+Disallow: /_next/
+Disallow: /static/
+
+# Allow important pages
+Allow: /
+Allow: /about
+Allow: /guide
+Allow: /contact
+Allow: /blog
+Allow: /legal/
+
+# Sitemap location
+Sitemap: https://xhsvideodownloader.com/sitemap.xml
+
+# Crawl delay (be nice to servers)
+Crawl-delay: 1

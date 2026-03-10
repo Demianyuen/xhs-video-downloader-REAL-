@@ -8,7 +8,7 @@ function TermsContent() {
   const isHans = locale === 'zh-Hans';
 
   const title = isEn ? 'Terms of Service' : isHans ? '服务条款' : '服務條款';
-  const lastUpdated = isEn ? 'Last updated: February 24, 2026' : isHans ? '最后更新：2026 年 2 月 24 日' : '最後更新：2026 年 2 月 24 日';
+  const lastUpdated = isEn ? 'Last updated: March 10, 2026' : isHans ? '最后更新：2026 年 3 月 10 日' : '最後更新：2026 年 3 月 10 日';
 
   const sections = isEn ? [
     { title: '1. Acceptance of Terms', content: 'By accessing and using XHS Downloader ("the Service"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Service.' },
