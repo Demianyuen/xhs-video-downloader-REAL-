@@ -3,7 +3,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { useI18n } from "./lib/i18n";
 import { getUsageStatus, recordDownload, getMaxDailyDownloads, UsageStatus } from "@/lib/usage-limiter";
-import { Sparkles, Zap, Shield, Download, Loader2, BookOpen, Code, Globe } from "lucide-react";
+import { Sparkles, Zap, Shield, Download, Loader2, BookOpen, Code, Globe, FileText, Copy, Check, ChevronDown, ChevronUp } from "lucide-react";
 import AdSense from "@/components/AdSense";
 
 function HomeContent() {
@@ -12,8 +12,10 @@ function HomeContent() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [usage, setUsage] = useState<UsageStatus | null>(null);
   const [cooldown, setCooldown] = useState(0);
-  const [videoData, setVideoData] = useState<{ downloadUrl: string; title: string } | null>(null);
+  const [videoData, setVideoData] = useState<{ downloadUrl: string; title: string; transcript?: string } | null>(null);
   const [isDownloadingFile, setIsDownloadingFile] = useState(false);
+  const [showTranscript, setShowTranscript] = useState(false);
+  const [transcriptCopied, setTranscriptCopied] = useState(false);
 
   useEffect(() => {
     setUsage(getUsageStatus());
@@ -72,7 +74,7 @@ function HomeContent() {
         recordDownload();
         setUsage(getUsageStatus());
         setCooldown(15);
-        setVideoData({ downloadUrl: data.downloadUrl, title: data.title || 'xhs-video' });
+        setVideoData({ downloadUrl: data.downloadUrl, title: data.title || 'xhs-video', transcript: data.transcript || '' });
         setUrl('');
       } else {
         alert(t.error.downloadFailed + ': ' + (data.error || t.error.unknown));
@@ -177,11 +179,45 @@ function HomeContent() {
               <button
                 onClick={handleFileDownload}
                 disabled={isDownloadingFile}
-                className="w-full py-3 px-6 rounded-xl font-bold text-sm bg-gradient-to-r from-pink-500 to-red-500 text-white disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full py-3 px-6 rounded-xl font-bold text-sm bg-gradient-to-r from-pink-500 to-red-500 text-white disabled:opacity-50 flex items-center justify-center gap-2 mb-3"
               >
                 <Download className="w-4 h-4" />
                 {isDownloadingFile ? t.preview.downloading : t.preview.downloadBtn}
               </button>
+
+              {videoData.transcript && (
+                <div className="border border-gray-200 rounded-xl overflow-hidden">
+                  <button
+                    onClick={() => setShowTranscript(v => !v)}
+                    className="w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-gray-50 transition text-sm font-medium text-gray-700"
+                  >
+                    <span className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-pink-500" />
+                      {'字幕 / Transcript'}
+                    </span>
+                    {showTranscript ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  </button>
+                  {showTranscript && (
+                    <div className="bg-gray-50 px-4 pb-4 pt-2">
+                      <div className="flex justify-end mb-2">
+                        <button
+                          onClick={async () => {
+                            await navigator.clipboard.writeText(videoData.transcript!);
+                            setTranscriptCopied(true);
+                            setTimeout(() => setTranscriptCopied(false), 2000);
+                          }}
+                          className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg bg-pink-100 text-pink-700 hover:bg-pink-200 transition"
+                        >
+                          {transcriptCopied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy</>}
+                        </button>
+                      </div>
+                      <pre className="whitespace-pre-wrap text-xs text-gray-700 font-sans leading-relaxed max-h-48 overflow-y-auto">
+                        {videoData.transcript}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
