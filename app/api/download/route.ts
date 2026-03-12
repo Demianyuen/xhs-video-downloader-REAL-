@@ -37,8 +37,12 @@ async function scrapeXHSPage(pageUrl: string): Promise<{
           },
         });
 
-        if (!res.ok) continue;
+        if (!res.ok) {
+          console.log(`[Scrape] HTTP ${res.status} for ${tryUrl}`);
+          continue;
+        }
         const html = await res.text();
+        console.log(`[Scrape] Got ${html.length} bytes from ${tryUrl} (${ua === DESKTOP_UA ? 'desktop' : 'mobile'}), has_masterUrl=${html.includes('"masterUrl"')}, has_sns=${html.includes('sns-video')}, has_ogvideo=${html.includes('og:video')}`);
 
         // Extract title
         const title = decodeHTMLEntities(
