@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isValidXHSUrl, extractVideoId } from '@/lib/xhs-service-vercel';
 
-// Uses cobalt.tools API — free, no key required, supports XHS
-async function fetchViaCoalt(url: string): Promise<{ url: string; filename?: string } | null> {
+// Try cobalt.tools API — free, no key required, supports XHS
+async function fetchViaCobalt(url: string): Promise<{ url: string; filename?: string } | null> {
   try {
     const res = await fetch('https://api.cobalt.tools/api/json', {
       method: 'POST',
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     console.log(`[Download API] Processing: ${videoId}`);
 
     // Step 1: Try cobalt.tools for direct download URL
-    const cobalt = await fetchViaCoalt(url);
+    const cobalt = await fetchViaCobalt(url);
     if (cobalt?.url) {
       const pageInfo = await scrapeXHSPage(url);
       return NextResponse.json({
@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Step 3: Nothing worked — return clear error
+    // Step 3: Nothing worked
     return NextResponse.json({
       success: false,
       error: '無法提取視頻連結。請確認連結是公開的視頻筆記，或稍後再試。',
