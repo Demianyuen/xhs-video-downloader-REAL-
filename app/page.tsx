@@ -315,6 +315,71 @@ function HomeContent() {
         </div>
 
       </main>
+
+      {/* FAQ Section */}
+      <section className="bg-white border-t border-pink-100 py-12">
+        <div className="max-w-3xl mx-auto px-4">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+            {t.faq.title}
+          </h2>
+          <div className="space-y-4">
+            {t.faq.items.map((item: { q: string; a: string }, i: number) => (
+              <details key={i} className="group bg-gray-50 rounded-xl border border-gray-100 overflow-hidden">
+                <summary className="flex justify-between items-center px-5 py-4 cursor-pointer font-medium text-gray-800 hover:text-pink-600 transition list-none">
+                  {item.q}
+                  <span className="ml-4 text-pink-400 group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <div className="px-5 pb-4 text-gray-600 text-sm leading-relaxed">{item.a}</div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-gray-400 py-10">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-7 h-7 bg-gradient-to-br from-pink-500 to-red-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">X</span>
+                </div>
+                <span className="font-bold text-white">XHS Downloader</span>
+              </div>
+              <p className="text-xs leading-relaxed">{t.footer.desc}</p>
+              <div className="flex gap-3 mt-4">
+                <a href="https://x.com/xhsdownloader" target="_blank" rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-white transition text-xs">Twitter/X</a>
+                <a href="https://github.com/Demianyuen/xhs-video-downloader-REAL-" target="_blank" rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-white transition text-xs">GitHub</a>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-3 text-sm">{t.footer.links}</h4>
+              <ul className="space-y-2 text-xs">
+                <li><a href="/guide" className="hover:text-white transition">{t.footer.guide}</a></li>
+                <li><a href="/blog" className="hover:text-white transition">{t.footer.blog}</a></li>
+                <li><a href="/about" className="hover:text-white transition">{t.footer.about}</a></li>
+                <li><a href="/contact" className="hover:text-white transition">{t.footer.contact}</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-3 text-sm">{t.footer.legal}</h4>
+              <ul className="space-y-2 text-xs">
+                <li><a href="/legal/privacy-policy" className="hover:text-white transition">{t.footer.privacy}</a></li>
+                <li><a href="/legal/terms" className="hover:text-white transition">{t.footer.terms}</a></li>
+              </ul>
+              <div className="mt-4">
+                <p className="text-xs">{t.footer.contact}: <a href="mailto:support@xhsvideodownloader.com" className="text-pink-400 hover:text-pink-300">support@xhsvideodownloader.com</a></p>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 pt-6 text-center text-xs">
+            <p>© {new Date().getFullYear()} XHS Downloader. {t.footer.rights}</p>
+          </div>
+        </div>
+      </footer>
     </>
   );
 }
