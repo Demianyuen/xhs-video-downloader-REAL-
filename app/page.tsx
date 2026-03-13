@@ -32,7 +32,8 @@ function HomeContent() {
   }, [cooldown]);
 
   const extractXHUrl = (input: string): string => {
-    const xhsRegex = /https?:\/\/[^\s]*xiaohongshu\.com\/(?:explore|discovery\/item)\/[a-zA-Z0-9]+/;
+    // Preserve xsec_token and xsec_source query params — required for XHS API auth
+    const xhsRegex = /https?:\/\/[^\s]*xiaohongshu\.com\/(?:explore|discovery\/item)\/[a-zA-Z0-9]+(?:\?[^\s]*)?/;
     const match = input.match(xhsRegex);
     return match ? match[0] : input.trim();
   };
