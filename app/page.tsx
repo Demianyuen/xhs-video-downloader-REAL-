@@ -92,7 +92,10 @@ function HomeContent() {
     if (!videoData) return;
     setIsDownloadingFile(true);
     try {
-      const res = await fetch(videoData.downloadUrl);
+      // Proxy through our API to bypass CORS on XHS CDN URLs
+      const proxyUrl = `/api/proxy?url=${encodeURIComponent(videoData.downloadUrl)}&filename=${encodeURIComponent(videoData.title)}`;
+      const res = await fetch(proxyUrl);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const blob = await res.blob();
       const objectUrl = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -141,6 +144,9 @@ function HomeContent() {
               disabled={isDownloading || cooldown > 0}
               className="w-full px-4 py-4 text-base sm:text-lg border-2 border-gray-200 rounded-xl focus:border-pink-500 transition outline-none disabled:bg-gray-50"
             />
+            <p className="text-xs text-gray-400 px-1">
+              {t.input.hint}
+            </p>
 
             {cooldown > 0 && (
               <div className="bg-pink-50 rounded-xl p-4 text-center">

@@ -49,7 +49,8 @@ export const translations = {
     },
     badge: '',
     input: {
-      placeholder: '粘貼小紅書連結（自動提取）...',
+      placeholder: '粘貼小紅書分享連結（含 xsec_token）...',
+      hint: '💡 在小紅書 App 點「分享 → 複製連結」，貼上完整連結即可',
     },
     trust: {
       ssl: 'SSL 加密',
@@ -148,7 +149,8 @@ export const translations = {
     },
     badge: '',
     input: {
-      placeholder: '粘贴小红书链接（自动提取）...',
+      placeholder: '粘贴小红书分享链接（含 xsec_token）...',
+      hint: '💡 在小红书 App 点「分享 → 复制链接」，粘贴完整链接即可',
     },
     trust: {
       ssl: 'SSL 加密',
@@ -247,7 +249,8 @@ export const translations = {
     },
     badge: '',
     input: {
-      placeholder: 'Paste Xiaohongshu link (auto-extracted)...',
+      placeholder: 'Paste Xiaohongshu share link (with xsec_token)...',
+      hint: '💡 In the XHS app, tap Share → Copy Link, then paste the full link here',
     },
     trust: {
       ssl: 'SSL Encrypted',
