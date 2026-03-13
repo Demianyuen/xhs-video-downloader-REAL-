@@ -4,7 +4,6 @@ import { useState, useEffect, FormEvent } from "react";
 import { useI18n } from "./lib/i18n";
 import { getUsageStatus, recordDownload, getMaxDailyDownloads, UsageStatus } from "@/lib/usage-limiter";
 import { Sparkles, Zap, Shield, Download, Loader2, BookOpen, Code, Globe, FileText, Copy, Check, ChevronDown, ChevronUp } from "lucide-react";
-import AdSense from "@/components/AdSense";
 
 function HomeContent() {
   const { t } = useI18n();
@@ -92,23 +91,18 @@ function HomeContent() {
     if (!videoData) return;
     setIsDownloadingFile(true);
     try {
-      // Proxy through our API to bypass CORS on XHS CDN URLs
+      // Use direct link to proxy — avoids buffering entire video in memory
       const proxyUrl = `/api/proxy?url=${encodeURIComponent(videoData.downloadUrl)}&filename=${encodeURIComponent(videoData.title)}`;
-      const res = await fetch(proxyUrl);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const blob = await res.blob();
-      const objectUrl = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = objectUrl;
+      a.href = proxyUrl;
       a.download = `${videoData.title}.mp4`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(objectUrl);
     } catch {
       alert(t.error.downloadFailed);
     } finally {
-      setIsDownloadingFile(false);
+      setTimeout(() => setIsDownloadingFile(false), 2000);
     }
   };
 
@@ -320,16 +314,6 @@ function HomeContent() {
           </div>
         </div>
 
-        {/* AdSense Ad Placement - Top Banner */}
-        <div className="mt-8 max-w-4xl mx-auto px-4">
-          <div className="bg-gray-50 rounded-xl p-4 border border-pink-100">
-            <AdSense
-              adSlot="YOUR_AD_SLOT_ID_1"
-              adFormat="horizontal"
-              style={{ display: 'block', minHeight: '90px' }}
-            />
-          </div>
-        </div>
       </main>
     </>
   );
