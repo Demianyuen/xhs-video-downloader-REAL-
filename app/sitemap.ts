@@ -16,12 +16,44 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
+    // Blog posts
     {
       url: `${baseUrl}/blog/how-to-download-xiaohongshu-videos`,
-      lastModified: new Date(),
+      lastModified: new Date('2026-03-04'),
       changeFrequency: 'monthly',
       priority: 0.8,
     },
+    {
+      url: `${baseUrl}/blog/why-xiaohongshu-is-so-popular`,
+      lastModified: new Date('2026-03-21'),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/blog/xiaohongshu-vs-douyin-comparison`,
+      lastModified: new Date('2026-03-21'),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/blog/how-to-succeed-on-xiaohongshu-marketing`,
+      lastModified: new Date('2026-03-21'),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/blog/xiaohongshu-recommendation-algorithm-explained`,
+      lastModified: new Date('2026-03-21'),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/blog/xiaohongshu-zhongcao-psychology`,
+      lastModified: new Date('2026-03-21'),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    // Pages
     {
       url: `${baseUrl}/about`,
       lastModified: new Date(),
