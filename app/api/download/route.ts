@@ -27,6 +27,59 @@ function checkRateLimit(ip: string, limit: number = 5, windowMs: number = 864000
 }
 
 /**
+ * Extract XHS URL from clipboard content
+ * Mobile app copies: "视频标题 https://www.xiaohongshu.com/explore/12345"
+ * Desktop copies: "https://www.xiaohongshu.com/explore/12345"
+ */
+function extractUrlFromClipboard(input: string): string | null {
+  // Trim whitespace
+  const trimmed = input.trim();
+
+  // Try direct URL first (desktop copy)
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.hostname.includes('xiaohongshu.com') || parsed.hostname.includes('xhslink.com')) {
+      return trimmed;
+    }
+  } catch {
+    // Not a direct URL, continue to extraction
+  }
+
+  // Extract URL from mixed content (mobile app copy)
+  // Matches: xiaohongshu.com URLs anywhere in the text
+  const urlRegex = /https?:\/\/(?:www\.)?(?:xiaohongshu\.com|xhslink\.com)[^\s\u4e00-\u9fff]*/gi;
+  const match = trimmed.match(urlRegex);
+
+  if (match && match[0]) {
+    // Clean up any trailing punctuation
+    let extractedUrl = match[0].replace(/[.,;:!？。，；：！]+$/, '');
+    // Ensure HTTPS
+    if (extractedUrl.startsWith('http://')) {
+      extractedUrl = extractedUrl.replace('http://', 'https://');
+    }
+    return extractedUrl;
+  }
+
+  return null;
+}
+
+/**
+ * Validate URL format - STRICT validation to prevent SSRF
+ */
+function isValidXhsUrl(input: string): boolean {
+  try {
+    const parsed = new URL(input);
+    // Only allow HTTPS
+    if (parsed.protocol !== 'https:') return false;
+    // Strict hostname check - whitelist only allowed domains
+    const allowedHosts = ['www.xiaohongshu.com', 'xiaohongshu.com', 'xhslink.com'];
+    return allowedHosts.includes(parsed.hostname);
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Extract video URL from XHS page
  */
 async function extractVideoUrl(url: string): Promise<{
@@ -138,30 +191,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate URL format - STRICT validation to prevent SSRF
-    function isValidXhsUrl(input: string): boolean {
-      try {
-        const parsed = new URL(input);
-        // Only allow HTTPS
-        if (parsed.protocol !== 'https:') return false;
-        // Strict hostname check - whitelist only allowed domains
-        const allowedHosts = ['www.xiaohongshu.com', 'xiaohongshu.com', 'xhslink.com'];
-        return allowedHosts.includes(parsed.hostname);
-      } catch {
-        return false;
-      }
-    }
-
-    if (!isValidXhsUrl(url)) {
+    // Extract URL from clipboard content (handles mobile app format)
+    const extractedUrl = extractUrlFromClipboard(url);
+    if (!extractedUrl) {
       return NextResponse.json(
         { error: 'Please provide a valid Xiaohongshu link (https://www.xiaohongshu.com/...)' },
         { status: 400 }
       );
     }
 
-    logger.info('Processing video', { url, type, removeWatermark });
+    if (!isValidXhsUrl(extractedUrl)) {
+      return NextResponse.json(
+        { error: 'Please provide a valid Xiaohongshu link (https://www.xiaohongshu.com/...)' },
+        { status: 400 }
+      );
+    }
 
-    const result = await extractVideoUrl(url);
+    logger.info('Processing video', { url: extractedUrl, originalInput: url, type, removeWatermark });
+
+    const result = await extractVideoUrl(extractedUrl);
     const videoId = generateVideoId();
 
     // Process watermark removal if requested
