@@ -233,6 +233,7 @@ export async function POST(request: NextRequest) {
       title: result.title,
       author: result.author,
       videoUrl: finalVideoUrl,
+      originalUrl: extractedUrl, // Store original URL for image/transcript extraction
       thumbnail: result.thumbnail || 'https://via.placeholder.com/400x300?text=XHS+Video',
       duration: 0,
       availableResolutions: ['1080p', '720p', '480p', '360p'],

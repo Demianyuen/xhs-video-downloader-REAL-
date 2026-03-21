@@ -8,10 +8,22 @@ interface VideoData {
   title: string;
   author: string;
   videoUrl: string;
+  originalUrl?: string; // Store original XHS URL for image/transcript extraction
   transcript?: string;
   duration: number;
   thumbnail: string;
   availableResolutions?: string[];
+}
+
+interface ExtractedImages {
+  images: Array<{ url: string; thumbnail: string; description?: string }>;
+  title: string;
+}
+
+interface ExtractedTranscript {
+  text: string;
+  segments?: Array<{ start: number; end: number; text: string }>;
+  wordCount: number;
 }
 
 const DEFAULT_RESOLUTIONS = ['1080p', '720p', '480p', '360p'];
@@ -22,11 +34,17 @@ export default function DownloadPage() {
   const [videoData, setVideoData] = useState<VideoData | null>(null);
   const [selectedResolution, setSelectedResolution] = useState('720p');
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'video' | 'transcript'>('video');
+  const [activeTab, setActiveTab] = useState<'video' | 'transcript' | 'images'>('video');
   const [downloading, setDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+
+  // New states for image and transcript extraction
+  const [extractedImages, setExtractedImages] = useState<ExtractedImages | null>(null);
+  const [extractedTranscript, setExtractedTranscript] = useState<ExtractedTranscript | null>(null);
+  const [extractingImages, setExtractingImages] = useState(false);
+  const [extractingTranscript, setExtractingTranscript] = useState(false);
 
   useEffect(() => {
     const fetchVideoData = async () => {
@@ -108,6 +126,95 @@ export default function DownloadPage() {
     navigator.clipboard.writeText(videoData.videoUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  // Extract images from the XHS post
+  const handleExtractImages = async () => {
+    if (!videoData?.originalUrl) return;
+
+    setExtractingImages(true);
+    try {
+      const response = await fetch('/api/extract-images', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: videoData.originalUrl }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setExtractedImages({
+          images: data.images,
+          title: data.title || videoData.title,
+        });
+      } else {
+        setError('No images found in this post');
+      }
+    } catch (err) {
+      setError('Failed to extract images');
+    } finally {
+      setExtractingImages(false);
+    }
+  };
+
+  // Extract transcript from the XHS post
+  const handleExtractTranscript = async () => {
+    if (!videoData?.originalUrl) return;
+
+    setExtractingTranscript(true);
+    try {
+      const response = await fetch('/api/extract-transcript', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: videoData.originalUrl }),
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.transcript) {
+        setExtractedTranscript({
+          text: data.transcript.text || data.transcript,
+          segments: data.transcript.segments,
+          wordCount: data.wordCount || 0,
+        });
+      } else {
+        setError('No transcript available for this post');
+      }
+    } catch (err) {
+      setError('Failed to extract transcript');
+    } finally {
+      setExtractingTranscript(false);
+    }
+  };
+
+  const handleDownloadImage = (imageUrl: string, filename: string) => {
+    const link = document.createElement('a');
+    link.href = imageUrl;
+    link.download = filename;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleDownloadTranscript = () => {
+    if (!extractedTranscript) return;
+
+    const element = document.createElement('a');
+    const content = typeof extractedTranscript.text === 'string'
+      ? extractedTranscript.text
+      : JSON.stringify(extractedTranscript, null, 2);
+
+    element.setAttribute(
+      'href',
+      'data:text/plain;charset=utf-8,' + encodeURIComponent(content)
+    );
+    element.setAttribute('download', `${videoData?.title || 'transcript'}.txt`);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
   };
 
   const handleTranscriptDownload = () => {
@@ -327,6 +434,16 @@ export default function DownloadPage() {
                 >
                   📝 Transcript
                 </button>
+                <button
+                  onClick={() => setActiveTab('images')}
+                  className={`flex-1 py-4 px-6 font-semibold transition-all ${
+                    activeTab === 'images'
+                      ? 'bg-gradient-to-r from-pink-50 to-orange-50 border-b-2 border-pink-500 text-pink-600'
+                      : 'text-gray-600 hover:text-gray-800'
+                  }`}
+                >
+                  🖼️ Images
+                </button>
               </div>
 
               {/* Tab Content */}
@@ -352,29 +469,113 @@ export default function DownloadPage() {
 
                 {activeTab === 'transcript' && (
                   <div className="space-y-4">
-                    {videoData.transcript ? (
+                    {extractedTranscript ? (
                       <>
                         <div className="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto border border-gray-200">
-                          <p className="text-gray-700 whitespace-pre-wrap text-sm leading-relaxed font-mono">
-                            {videoData.transcript}
+                          <p className="text-gray-700 whitespace-pre-wrap text-sm leading-relaxed">
+                            {extractedTranscript.text}
                           </p>
                         </div>
+                        <div className="flex items-center justify-between text-sm text-gray-600 bg-blue-50 rounded-lg p-3">
+                          <span>📊 {extractedTranscript.wordCount} words</span>
+                          <span>🕐 Approx. {Math.ceil(extractedTranscript.wordCount / 150)} min read</span>
+                        </div>
                         <button
-                          onClick={handleTranscriptDownload}
+                          onClick={handleDownloadTranscript}
                           className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg hover:shadow-xl"
                         >
                           ⬇️ Download Transcript
                         </button>
                       </>
                     ) : (
-                      <div className="text-center py-12 bg-gradient-to-br from-orange-50 to-yellow-50 rounded-lg border-2 border-dashed border-orange-200">
-                        <p className="text-gray-600 text-lg mb-2">📝 Transcript Coming Soon</p>
-                        <p className="text-gray-500 text-sm mb-4">
-                          AI-powered transcription is being developed. Download the video first!
-                        </p>
-                        <p className="text-xs text-gray-400">
-                          Expected: Q2 2026
-                        </p>
+                      <div className="text-center py-8 space-y-4">
+                        <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6 border-2 border-dashed border-purple-200">
+                          <p className="text-gray-700 text-lg mb-2">📝 Extract Transcript</p>
+                          <p className="text-gray-600 text-sm mb-4">
+                            Extract the full text content from this XHS post, including captions, descriptions, and notes.
+                          </p>
+                          <button
+                            onClick={handleExtractTranscript}
+                            disabled={extractingTranscript}
+                            className="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                          >
+                            {extractingTranscript ? (
+                              <>
+                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                                Extracting...
+                              </>
+                            ) : (
+                              '🔍 Extract Transcript'
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {activeTab === 'images' && (
+                  <div className="space-y-4">
+                    {extractedImages ? (
+                      <>
+                        <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                          <p className="text-sm text-blue-800">
+                            📸 Found {extractedImages.images.length} image(s) from this post
+                          </p>
+                        </div>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                          {extractedImages.images.map((image, index) => (
+                            <div key={index} className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition">
+                              <img
+                                src={image.thumbnail}
+                                alt={`Image ${index + 1}`}
+                                className="w-full aspect-square object-cover"
+                                loading="lazy"
+                              />
+                              <div className="p-3">
+                                <p className="text-xs text-gray-500 mb-2">Image {index + 1}</p>
+                                <button
+                                  onClick={() => handleDownloadImage(image.url, `xhs-image-${index + 1}.jpg`)}
+                                  className="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white text-xs font-semibold py-2 px-4 rounded-lg transition-all"
+                                >
+                                  ⬇️ Download
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="text-center text-sm text-gray-500 mt-4">
+                          Images are downloaded in their original quality
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-center py-8 space-y-4">
+                        <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-lg p-6 border-2 border-dashed border-green-200">
+                          <p className="text-gray-700 text-lg mb-2">🖼️ Extract Images</p>
+                          <p className="text-gray-600 text-sm mb-4">
+                            Extract all images from this XHS post, including product photos, lifestyle shots, and tutorial screenshots.
+                          </p>
+                          <button
+                            onClick={handleExtractImages}
+                            disabled={extractingImages}
+                            className="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                          >
+                            {extractingImages ? (
+                              <>
+                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                                Extracting...
+                              </>
+                            ) : (
+                              '🔍 Extract Images'
+                            )}
+                          </button>
+                        </div>
+                        <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+                          <p className="text-xs text-yellow-800">
+                            ⚠️ Note: Image extraction works best for posts with multiple images.
+                            Video-only posts may not have extractable images.
+                          </p>
+                        </div>
                       </div>
                     )}
                   </div>
