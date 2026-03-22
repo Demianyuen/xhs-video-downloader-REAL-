@@ -53,6 +53,36 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.8,
     },
+    {
+      url: `${baseUrl}/blog/ai-hallucination-deep-analysis`,
+      lastModified: new Date('2026-03-21'),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/blog/xhs-community-trust-system`,
+      lastModified: new Date('2026-03-21'),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/blog/real-time-verification-ugc-platforms`,
+      lastModified: new Date('2026-03-21'),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/blog/ai-hallucination-vs-xhs-real-experiences`,
+      lastModified: new Date('2026-03-21'),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/blog/building-trust-human-verification-ai`,
+      lastModified: new Date('2026-03-21'),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
     // Pages
     {
       url: `${baseUrl}/about`,

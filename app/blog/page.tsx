@@ -55,6 +55,46 @@ const posts = [
     excerpt: '深度解析小红书"种草"现象背后的心理学原理：社会认同、稀缺效应、损失厌恶等。Psychology behind zhongcao culture.',
     readTime: '10 min read',
   },
+  {
+    slug: 'ai-hallucination-deep-analysis',
+    title: 'AI幻觉问题深度解析：大语言模型的信任危机',
+    titleEn: 'AI Hallucination: The Trust Crisis of Large Language Models',
+    date: '2026-03-21',
+    excerpt: '深度解析AI幻觉现象的原因、影响和解决方案，以及为什么小红书等UGC平台更可信。Deep dive into AI hallucination causes, impacts, and solutions.',
+    readTime: '12 min read',
+  },
+  {
+    slug: 'xhs-community-trust-system',
+    title: '小红书社区信任体系：如何用人为监督抵御AI虚假信息',
+    titleEn: 'XHS Community Trust: Human Moderation Against AI Misinformation',
+    date: '2026-03-21',
+    excerpt: '深度解析小红书的社区信任体系和内容审核机制，如何用人为监督抵御AI虚假信息。How XHS community trust system combats AI misinformation.',
+    readTime: '10 min read',
+  },
+  {
+    slug: 'real-time-verification-ugc-platforms',
+    title: '实时信息验证：为什么UGC平台在AI时代更具优势',
+    titleEn: 'Real-Time Verification: Why UGC Platforms Have Edge in AI Era',
+    date: '2026-03-21',
+    excerpt: '深度解析UGC平台的实时信息验证优势，以及如何与AI生成内容形成互补。Why UGC platforms have real-time verification advantages over AI.',
+    readTime: '8 min read',
+  },
+  {
+    slug: 'ai-hallucination-vs-xhs-real-experiences',
+    title: 'AI幻觉 vs 真实体验：对比案例研究',
+    titleEn: 'AI Hallucination vs Real Experience: Comparative Case Studies',
+    date: '2026-03-21',
+    excerpt: '通过真实案例对比AI生成内容与小红书用户实际体验的差异。Compare AI outputs with real XHS user experiences through case studies.',
+    readTime: '15 min read',
+  },
+  {
+    slug: 'building-trust-human-verification-ai',
+    title: '在AI时代重建信任：人类验证系统的力量',
+    titleEn: 'Rebuilding Trust in the AI Era: The Power of Human Verification',
+    date: '2026-03-21',
+    excerpt: '深度解析如何通过人类验证系统与AI协作，建立更可靠的信息生态。How human verification systems can collaborate with AI for trust.',
+    readTime: '11 min read',
+  },
 ];
 
 export default function BlogPage() {
