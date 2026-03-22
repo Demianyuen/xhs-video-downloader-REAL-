@@ -78,17 +78,14 @@ export default function Home() {
 
           {/* Main heading */}
           <div className="text-center mb-12 animate-fade-in-up">
-            <h1 className="text-5xl sm:text-6xl font-extrabold text-gray-900 tracking-tight mb-4">
+            <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-3 tracking-tight">
               小红书视频下载器
             </h1>
-            <p className="text-xl sm:text-2xl font-semibold text-gray-700 mb-3">
+            <p className="text-lg sm:text-xl font-medium text-gray-500 mb-6">
               XHS Video Downloader
             </p>
-            <p className="text-base text-gray-500 max-w-lg mx-auto leading-relaxed">
-              Download Xiaohongshu videos without watermark in HD quality. Fast, safe, and no registration required.
-            </p>
-            <p className="text-sm text-gray-400 mt-1">
-              免费下载小红书视频，无水印高清画质，无需注册
+            <p className="text-sm text-gray-400 max-w-md mx-auto leading-relaxed">
+              Free Xiaohongshu video downloader — no watermark, no registration, HD quality.
             </p>
           </div>
 

@@ -1,26 +1,13 @@
 import type { Metadata } from "next";
-import { Noto_Sans, Noto_Sans_SC, Noto_Sans_TC } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 
-const notoSans = Noto_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-noto-sans",
-  display: "swap",
-});
-
-const notoSansSC = Noto_Sans_SC({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-sc",
-  display: "swap",
-});
-
-const notoSansTC = Noto_Sans_TC({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-tc",
+// Use Inter for all text - it's clean and supports Chinese well
+const inter = Inter({
+  subsets: ["latin", "cyrillic", "greek", "vietnamese"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -82,7 +69,7 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body className={`${notoSans.variable} ${notoSansSC.variable} ${notoSansTC.variable} antialiased`} style={{ fontFamily: 'var(--font-noto-sans), var(--font-sc), var(--font-tc), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
+      <body className={`${inter.variable} antialiased`}>
         {children}
       </body>
     </html>

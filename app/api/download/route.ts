@@ -46,13 +46,13 @@ function extractUrlFromClipboard(input: string): string | null {
   }
 
   // Extract URL from mixed content (mobile app copy)
-  // Matches: xiaohongshu.com URLs anywhere in the text
-  const urlRegex = /https?:\/\/(?:www\.)?(?:xiaohongshu\.com|xhslink\.com)[^\s\u4e00-\u9fff]*/gi;
+  // Handles: "标题 https://..." or "https://...标题" or "https://..."
+  const urlRegex = /https?:\/\/(?:www\.)?(?:xiaohongshu\.com|xhslink\.com)\S*/gi;
   const match = trimmed.match(urlRegex);
 
   if (match && match[0]) {
-    // Clean up any trailing punctuation
-    let extractedUrl = match[0].replace(/[.,;:!？。，；：！]+$/, '');
+    // Clean up any trailing punctuation and Chinese text
+    let extractedUrl = match[0].replace(/[.,;:!？。，；：！\u4e00-\u9fff]+$/, '');
     // Ensure HTTPS
     if (extractedUrl.startsWith('http://')) {
       extractedUrl = extractedUrl.replace('http://', 'https://');
