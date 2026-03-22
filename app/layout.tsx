@@ -5,21 +5,21 @@ import Script from "next/script";
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-noto-sans",
   display: "swap",
 });
 
 const notoSansSC = Noto_Sans_SC({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-sc",
   display: "swap",
 });
 
 const notoSansTC = Noto_Sans_TC({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-tc",
   display: "swap",
 });
@@ -82,7 +82,7 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body className={`${notoSans.variable} ${notoSansSC.variable} ${notoSansTC.variable} antialiased`} style={{ fontFamily: 'var(--font-noto-sans), var(--font-sc), var(--font-tc), sans-serif' }}>
+      <body className={`${notoSans.variable} ${notoSansSC.variable} ${notoSansTC.variable} antialiased`} style={{ fontFamily: 'var(--font-noto-sans), var(--font-sc), var(--font-tc), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
         {children}
       </body>
     </html>

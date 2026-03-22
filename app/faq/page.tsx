@@ -36,8 +36,8 @@ const faqs = [
   {
     question: 'Do I need to register an account?',
     questionZh: '我需要注册账户吗？',
-    answer: 'No registration required! Just paste the URL and download. We respect your privacy and don\'t collect personal information.',
-    answerZh: '无需注册！只需粘贴链接即可下载。我们尊重您的隐私，不收集个人信息。',
+    answer: "No registration required! Just paste the URL and download. We respect your privacy and don't collect personal information.",
+    answerZh: "无需注册！只需粘贴链接即可下载。我们尊重您的隐私，不收集个人信息。",
   },
   {
     question: 'Can I download videos on mobile devices?',
@@ -54,19 +54,19 @@ const faqs = [
   {
     question: 'Is it legal to download Xiaohongshu videos?',
     questionZh: '下载小红书视频合法吗？',
-    answer: 'Downloading videos for personal viewing is generally acceptable. However, redistributing, selling, or using copyrighted content for commercial purposes without permission may violate copyright laws. Please respect content creators\' rights.',
+    answer: "Downloading videos for personal viewing is generally acceptable. However, redistributing, selling, or using copyrighted content for commercial purposes without permission may violate copyright laws. Please respect content creators' rights.",
     answerZh: '下载视频供个人观看通常是可以接受的。但是，未经许可重新分发、出售或出于商业目的使用受版权保护的内容可能违反版权法。请尊重内容创作者的权利。',
   },
   {
     question: 'Why does mobile app copy-paste not work sometimes?',
     questionZh: '为什么手机应用复制粘贴有时不工作？',
-    answer: 'We\'ve fixed this issue! Our tool now supports mobile app clipboard format. Simply copy from the Xiaohongshu app (which includes the video title) and paste directly. It works automatically.',
+    answer: "We've fixed this issue! Our tool now supports mobile app clipboard format. Simply copy from the Xiaohongshu app (which includes the video title) and paste directly. It works automatically.",
     answerZh: '我们已经修复了这个问题！我们的工具现在支持移动应用剪贴板格式。只需从小红书应用复制（包含视频标题）并直接粘贴即可。它会自动工作。',
   },
   {
     question: 'How long are downloaded links valid?',
     questionZh: '下载的链接有效期是多久？',
-    answer: 'Download links are valid for 24 hours. After that, you\'ll need to generate a new link by pasting the URL again.',
+    answer: "Download links are valid for 24 hours. After that, you'll need to generate a new link by pasting the URL again.",
     answerZh: '下载链接的有效期为24小时。之后，您需要通过再次粘贴URL来生成新链接。',
   },
   {
@@ -84,7 +84,7 @@ const faqs = [
   {
     question: 'Is my data safe when using this service?',
     questionZh: '使用此服务时我的数据安全吗？',
-    answer: 'Absolutely! We don\'t collect personal information, don\'t require registration, and all video URLs are automatically deleted after 24 hours. We use secure HTTPS encryption for all connections.',
+    answer: "Absolutely! We don't collect personal information, don't require registration, and all video URLs are automatically deleted after 24 hours. We use secure HTTPS encryption for all connections.",
     answerZh: '绝对安全！我们不收集个人信息，不需要注册，所有视频链接在24小时后自动删除。我们对所有连接使用安全的HTTPS加密。',
   },
   {
@@ -103,87 +103,91 @@ export default function FAQPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-orange-50 to-yellow-50">
-      <header className="bg-white shadow-sm border-b border-pink-100">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">🎬</span>
-            <a href="/" className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
-              XHS Video Downloader
-            </a>
-          </div>
-          <nav className="flex gap-6 text-sm">
-            <a href="/" className="text-gray-600 hover:text-gray-900 transition">Home</a>
-            <a href="/blog" className="text-gray-600 hover:text-gray-900 transition">Blog</a>
-            <a href="/about" className="text-gray-600 hover:text-gray-900 transition">About</a>
-            <a href="/faq" className="text-pink-600 font-semibold transition">FAQ</a>
+    <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(160deg, #fff1f2 0%, #fff7ed 50%, #fef9c3 100%)' }}>
+
+      {/* Header */}
+      <header className="bg-white/70 backdrop-blur-md border-b border-pink-100/60 sticky top-0 z-50">
+        <div className="section-container py-4 flex items-center justify-between">
+          <a href="/" className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center text-white text-sm font-bold shadow-button">
+              X
+            </div>
+            <span className="text-xl font-extrabold gradient-text hidden sm:block">XHS Downloader</span>
+          </a>
+          <nav className="flex gap-5 text-sm items-center">
+            <a href="/" className="text-gray-500 hover:text-gray-900 transition-colors">Home</a>
+            <a href="/blog" className="text-gray-500 hover:text-gray-900 transition-colors">Blog</a>
+            <a href="/about" className="text-gray-500 hover:text-gray-900 transition-colors">About</a>
+            <a href="/faq" className="text-pink-600 font-semibold">FAQ</a>
           </nav>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-16">
+      {/* Main */}
+      <main className="flex-1 section-container py-16">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h1>
-          <p className="text-xl text-gray-600">
-            常见问题解答 - Find answers to common questions about XHS Video Downloader
+          <span className="badge mb-4">FAQ</span>
+          <h1 className="text-4xl font-extrabold text-gray-900 mb-3">Frequently Asked Questions</h1>
+          <p className="text-lg text-gray-500 max-w-xl mx-auto">
+            常见问题解答 — Find answers to common questions about XHS Video Downloader
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-          <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <div key={index} className="border-b border-gray-200 last:border-0">
-                <button
-                  onClick={() => toggleFAQ(index)}
-                  className="w-full text-left py-4 flex items-center justify-between hover:text-pink-600 transition"
+        {/* FAQ accordion */}
+        <div className="card divide-y divide-gray-100 overflow-hidden mb-10">
+          {faqs.map((faq, index) => (
+            <div key={index}>
+              <button
+                onClick={() => toggleFAQ(index)}
+                className="w-full text-left px-6 py-5 flex items-start justify-between gap-4 hover:bg-pink-50/40 transition-colors duration-200 group"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-gray-900 text-sm leading-snug">{faq.question}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{faq.questionZh}</p>
+                </div>
+                <svg
+                  className={`w-5 h-5 flex-shrink-0 mt-0.5 text-gray-400 group-hover:text-pink-500 transition-transform duration-300 ${openIndex === index ? 'rotate-180 text-pink-500' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <span className="font-semibold text-gray-900 pr-4">{faq.question}</span>
-                  <svg
-                    className={`w-5 h-5 flex-shrink-0 transition-transform ${openIndex === index ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                {openIndex === index && (
-                  <div className="pb-4 text-gray-600">
-                    <p className="mb-2">{faq.answer}</p>
-                    <p className="text-gray-500 text-sm">{faq.answerZh}</p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {openIndex === index && (
+                <div className="px-6 pb-5 text-sm text-gray-600 leading-relaxed animate-fade-in">
+                  <p className="mb-1.5">{faq.answer}</p>
+                  <p className="text-gray-400">{faq.answerZh}</p>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Still Have Questions?</h2>
-          <p className="text-gray-600 mb-6">
-            Can't find the answer you're looking for? Please reach out to our support team.
-          </p>
-          <p className="text-gray-600 mb-6">
-            找不到您想要的答案？请联系我们的支持团队。
-          </p>
+        {/* CTA */}
+        <div className="card p-8 text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Still Have Questions?</h2>
+          <p className="text-gray-500 mb-1">Can't find the answer you're looking for? Please reach out to our support team.</p>
+          <p className="text-gray-400 text-sm mb-6">找不到您想要的答案？请联系我们的支持团队。</p>
           <a
             href="/contact"
-            className="inline-block bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg"
+            className="btn-primary inline-flex"
           >
-            Contact Us / 联系我们
+            Contact Us
           </a>
         </div>
       </main>
 
-      <footer className="border-t border-gray-100 py-8 mt-16">
-        <div className="max-w-7xl mx-auto px-6 text-center text-sm text-gray-500">
+      {/* Footer */}
+      <footer className="border-t border-gray-100 py-8 mt-auto">
+        <div className="max-w-7xl mx-auto px-6 text-center text-sm text-gray-400">
           <div className="flex justify-center gap-6 mb-4">
-            <a href="/" className="hover:text-pink-500 transition">Home</a>
-            <a href="/blog" className="hover:text-pink-500 transition">Blog</a>
-            <a href="/about" className="hover:text-pink-500 transition">About</a>
-            <a href="/faq" className="hover:text-pink-500 transition">FAQ</a>
-            <a href="/privacy" className="hover:text-pink-500 transition">Privacy</a>
-            <a href="/terms" className="hover:text-pink-500 transition">Terms</a>
+            <a href="/" className="hover:text-pink-500 transition-colors">Home</a>
+            <a href="/blog" className="hover:text-pink-500 transition-colors">Blog</a>
+            <a href="/about" className="hover:text-pink-500 transition-colors">About</a>
+            <a href="/privacy" className="hover:text-pink-500 transition-colors">Privacy</a>
+            <a href="/terms" className="hover:text-pink-500 transition-colors">Terms</a>
           </div>
           <p>© 2026 XHS Video Downloader. All rights reserved.</p>
         </div>

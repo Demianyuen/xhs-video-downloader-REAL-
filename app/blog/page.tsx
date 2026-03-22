@@ -100,82 +100,100 @@ const posts = [
 
 export default function BlogPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-orange-50 to-yellow-50">
-      <header className="bg-white shadow-sm border-b border-pink-100">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">🎬</span>
-            <a href="/" className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
-              XHS Video Downloader
-            </a>
-          </div>
-          <nav className="flex gap-6 text-sm items-center">
-            <a href="/" className="text-gray-600 hover:text-gray-900 transition">Home</a>
-            <a href="/blog" className="text-pink-600 font-semibold transition">Blog</a>
-            <a href="/about" className="text-gray-600 hover:text-gray-900 transition">About</a>
-            <a href="/faq" className="text-gray-600 hover:text-gray-900 transition">FAQ</a>
+    <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(160deg, #fff1f2 0%, #fff7ed 50%, #fef9c3 100%)' }}>
+
+      {/* Header */}
+      <header className="bg-white/70 backdrop-blur-md border-b border-pink-100/60 sticky top-0 z-50">
+        <div className="section-container py-4 flex items-center justify-between">
+          <a href="/" className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center text-white text-sm font-bold shadow-button">
+              X
+            </div>
+            <span className="text-xl font-extrabold gradient-text hidden sm:block">XHS Downloader</span>
+          </a>
+          <nav className="flex gap-5 text-sm items-center">
+            <a href="/" className="text-gray-500 hover:text-gray-900 transition-colors">Home</a>
+            <a href="/blog" className="text-pink-600 font-semibold">Blog</a>
+            <a href="/about" className="text-gray-500 hover:text-gray-900 transition-colors">About</a>
+            <a href="/faq" className="text-gray-500 hover:text-gray-900 transition-colors">FAQ</a>
             <LanguageSwitcher />
           </nav>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-16">
+      {/* Main */}
+      <main className="flex-1 section-container py-16">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Blog</h1>
-          <p className="text-xl text-gray-600 mb-2">
-            博客 - Tips, tutorials and guides for Xiaohongshu
-          </p>
-          <p className="text-gray-500">
+          <span className="badge mb-4">Blog</span>
+          <h1 className="text-4xl font-extrabold text-gray-900 mb-3">XHS Video Downloader Blog</h1>
+          <p className="text-lg text-gray-500 max-w-xl mx-auto">
             小红书视频下载技巧、教程、平台分析和营销指南
           </p>
         </div>
 
-        <div className="space-y-8">
+        {/* Post grid */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-12">
           {posts.map((post) => (
-            <article key={post.slug} className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition">
-              <div className="flex items-center gap-3 text-sm text-gray-500 mb-3">
-                <span>📅 {post.date}</span>
-                <span>·</span>
-                <span>⏱️ {post.readTime}</span>
+            <article
+              key={post.slug}
+              className="card-hover-lift p-6 flex flex-col"
+            >
+              <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
+                <span className="flex items-center gap-1">
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                  {post.date}
+                </span>
+                <span className="flex items-center gap-1">
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  {post.readTime}
+                </span>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                <Link href={`/blog/${post.slug}`} className="hover:text-pink-600 transition">
+
+              <h2 className="text-base font-bold text-gray-900 mb-1 leading-snug">
+                <Link href={`/blog/${post.slug}`} className="hover:text-pink-600 transition-colors">
                   {post.title}
                 </Link>
               </h2>
-              <p className="text-gray-500 text-sm mb-1">{post.titleEn}</p>
-              <p className="text-gray-600 mt-3 mb-5">{post.excerpt}</p>
+              <p className="text-xs text-gray-400 mb-3">{post.titleEn}</p>
+              <p className="text-sm text-gray-500 mt-auto leading-relaxed line-clamp-3">{post.excerpt}</p>
               <Link
                 href={`/blog/${post.slug}`}
-                className="inline-flex items-center gap-2 text-pink-600 font-semibold hover:text-pink-700 transition"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-pink-500 hover:text-pink-700 transition-colors"
               >
-                Read more →
+                Read more
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
               </Link>
             </article>
           ))}
         </div>
 
-        <div className="mt-12 bg-gradient-to-r from-pink-100 to-orange-100 rounded-2xl p-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">More Articles Coming Soon</h2>
-          <p className="text-gray-700">
+        {/* CTA */}
+        <div className="bg-white rounded-2xl shadow-card p-8 text-center border border-pink-100/60">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">More Articles Coming Soon</h2>
+          <p className="text-gray-500 mb-2">
             We're regularly publishing new content about Xiaohongshu, AI tools, and video downloading.
-            Stay tuned for more tips and tutorials!
           </p>
-          <p className="text-gray-600 mt-2 text-sm">
+          <p className="text-gray-400 text-sm">
             我们会定期发布关于小红书、AI工具和视频下载的新内容。敬请期待！
           </p>
         </div>
       </main>
 
-      <footer className="border-t border-gray-100 py-8 mt-16">
-        <div className="max-w-7xl mx-auto px-6 text-center text-sm text-gray-500">
+      {/* Footer */}
+      <footer className="border-t border-gray-100 py-8 mt-auto">
+        <div className="max-w-7xl mx-auto px-6 text-center text-sm text-gray-400">
           <div className="flex justify-center gap-6 mb-4">
-            <a href="/" className="hover:text-pink-500 transition">Home</a>
-            <a href="/blog" className="hover:text-pink-500 transition">Blog</a>
-            <a href="/about" className="hover:text-pink-500 transition">About</a>
-            <a href="/contact" className="hover:text-pink-500 transition">Contact</a>
-            <a href="/privacy" className="hover:text-pink-500 transition">Privacy</a>
-            <a href="/terms" className="hover:text-pink-500 transition">Terms</a>
+            <a href="/" className="hover:text-pink-500 transition-colors">Home</a>
+            <a href="/blog" className="hover:text-pink-500 transition-colors">Blog</a>
+            <a href="/about" className="hover:text-pink-500 transition-colors">About</a>
+            <a href="/privacy" className="hover:text-pink-500 transition-colors">Privacy</a>
+            <a href="/terms" className="hover:text-pink-500 transition-colors">Terms</a>
           </div>
           <p>© 2026 XHS Video Downloader. All rights reserved.</p>
         </div>

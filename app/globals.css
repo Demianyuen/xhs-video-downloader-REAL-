@@ -2,64 +2,178 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Base polish ─────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  font-family: 'Noto Sans', 'Noto Sans SC', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-weight: 400;
-  line-height: 1.6;
-  color: #1a1a1a;
+  text-rendering: optimizeLegibility;
+  line-height: 1.7;
+  color: #1a1a2e;
 }
 
-/* Better typography */
+/* ── Typography scale ─────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.25;
   letter-spacing: -0.02em;
+  color: #111827;
 }
 
-h1 {
-  font-size: clamp(2rem, 5vw, 3rem);
-}
-
-h2 {
-  font-size: clamp(1.5rem, 4vw, 2.25rem);
-}
-
-h3 {
-  font-size: clamp(1.25rem, 3vw, 1.875rem);
-}
+h1 { font-size: clamp(1.875rem, 4vw, 2.75rem); font-weight: 800; }
+h2 { font-size: clamp(1.5rem,  3vw, 2rem);     font-weight: 700; }
+h3 { font-size: clamp(1.125rem, 2vw, 1.5rem);  font-weight: 600; }
 
 p {
-  margin-bottom: 1rem;
+  color: #374151;
+  line-height: 1.75;
 }
 
-/* Chinese characters use Noto Sans SC/TC */
-:lang(zh-CN), .zh-CN {
-  font-family: 'Noto Sans SC', 'Noto Sans', sans-serif;
+/* ── Chinese text rendering ────────────────────────────────── */
+:lang(zh),   .zh   { font-family: var(--font-sc), var(--font-tc), sans-serif; }
+:lang(zh-CN), .zh-CN { font-family: var(--font-sc), sans-serif; }
+:lang(zh-TW), .zh-TW { font-family: var(--font-tc), sans-serif; }
+
+/* ── Text selection ────────────────────────────────────────── */
+::selection {
+  background-color: rgba(230, 57, 107, 0.18);
+  color: #be185d;
 }
 
-:lang(zh-TW), .zh-TW {
-  font-family: 'Noto Sans TC', 'Noto Sans', sans-serif;
+/* ── Custom scrollbar (webkit) ────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(230, 57, 107, 0.25);
+  border-radius: 3px;
 }
+::-webkit-scrollbar-thumb:hover { background: rgba(230, 57, 107, 0.45); }
 
-/* Animation for fade-in effect */
+/* ── Keyframe definitions ──────────────────────────────────── */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1);    }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0);    }
+  50%      { transform: translateY(-10px); }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-out;
+/* ── Utility classes ──────────────────────────────────────── */
+.animate-fade-in    { animation: fadeIn    0.5s ease-out; }
+.animate-fade-in-up { animation: fadeInUp  0.6s ease-out; }
+.animate-fade-in-delay-1 { animation: fadeIn 0.5s ease-out 0.15s both; }
+.animate-fade-in-delay-2 { animation: fadeIn 0.5s ease-out 0.30s both; }
+.animate-scale-in   { animation: scaleIn   0.25s ease-out; }
+.animate-shimmer    { animation: shimmer    2s linear infinite; background-size: 200% 100%; }
+.animate-float      { animation: float     6s ease-in-out infinite; }
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #ec4899 0%, #f97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* Chinese characters use Noto Sans SC */
-:lang(zh), .zh {
-  font-family: var(--font-sc), sans-serif;
+/* Glass card effect */
+.glass-card {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Soft divider */
+.divider-soft {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(230, 57, 107, 0.12), transparent);
+}
+
+/* ── Component layer ───────────────────────────────────────── */
+@layer components {
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-gradient-to-r from-pink-500 to-orange-500
+           hover:from-pink-600 hover:to-orange-600
+           text-white font-bold
+           py-4 px-8 rounded-2xl
+           shadow-button hover:shadow-button-lg
+           transition-all duration-300 ease-spring
+           transform hover:-translate-y-0.5
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-white text-gray-700 font-semibold
+           py-3 px-6 rounded-xl
+           border border-gray-200
+           hover:border-pink-300 hover:text-pink-600
+           hover:shadow-card
+           transition-all duration-200;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-white rounded-2xl shadow-card
+           border border-gray-100/60
+           transition-shadow duration-300
+           hover:shadow-card-hover;
+  }
+
+  .card-hover-lift {
+    @apply card
+           hover:-translate-y-1
+           transform transition-all duration-300;
+  }
+
+  /* Page sections */
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Input fields */
+  .input-field {
+    @apply w-full px-6 py-4 text-base
+           bg-white
+           border-2 border-gray-200 rounded-xl
+           placeholder:text-gray-400
+           focus:border-pink-400 focus:ring-4 focus:ring-pink-100
+           focus:outline-none
+           transition-all duration-200
+           shadow-sm;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center gap-1.5
+           px-3 py-1 rounded-full text-xs font-semibold
+           bg-pink-50 text-pink-600 border border-pink-200;
+  }
+
+  /* Feature icon box */
+  .icon-box {
+    @apply w-12 h-12 rounded-xl
+           bg-gradient-to-br from-pink-50 to-orange-50
+           flex items-center justify-center
+           text-2xl mb-3;
+  }
 }
