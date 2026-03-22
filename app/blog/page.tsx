@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export const metadata: Metadata = {
   title: 'Blog - XHS Video Downloader Tips & Tutorials',
@@ -108,11 +109,12 @@ export default function BlogPage() {
               XHS Video Downloader
             </a>
           </div>
-          <nav className="flex gap-6 text-sm">
+          <nav className="flex gap-6 text-sm items-center">
             <a href="/" className="text-gray-600 hover:text-gray-900 transition">Home</a>
             <a href="/blog" className="text-pink-600 font-semibold transition">Blog</a>
             <a href="/about" className="text-gray-600 hover:text-gray-900 transition">About</a>
             <a href="/faq" className="text-gray-600 hover:text-gray-900 transition">FAQ</a>
+            <LanguageSwitcher />
           </nav>
         </div>
       </header>

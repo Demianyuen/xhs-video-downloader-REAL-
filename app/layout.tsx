@@ -1,10 +1,28 @@
 import type { Metadata } from "next";
-import { Noto_Sans, Noto_Sans_SC } from "next/font/google";
+import { Noto_Sans, Noto_Sans_SC, Noto_Sans_TC } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 
-const notoSans = Noto_Sans({ subsets: ["latin"], weight: ["400", "600", "700"] });
-const notoSansSC = Noto_Sans_SC({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-sc" });
+const notoSans = Noto_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-noto-sans",
+  display: "swap",
+});
+
+const notoSansSC = Noto_Sans_SC({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sc",
+  display: "swap",
+});
+
+const notoSansTC = Noto_Sans_TC({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-tc",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "XHS Video Downloader - Free Xiaohongshu Video Downloader | 小红书视频下载",
@@ -56,20 +74,15 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* Google AdSense - IMPORTANT: Replace with your actual Publisher ID */}
-        {/* Step 1: Go to https://www.google.com/adsense and get your Publisher ID */}
-        {/* Step 2: Replace 'ca-pub-XXXXXXXXXXXXXXXX' below with your actual ID */}
-        {/* Step 3: Uncomment the Script component below */}
-        {/*
+        {/* Google AdSense */}
         <Script
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7935038704820292"
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
-        */}
       </head>
-      <body className={`${notoSans.className} ${notoSansSC.variable} antialiased`}>
+      <body className={`${notoSans.variable} ${notoSansSC.variable} ${notoSansTC.variable} antialiased`} style={{ fontFamily: 'var(--font-noto-sans), var(--font-sc), var(--font-tc), sans-serif' }}>
         {children}
       </body>
     </html>

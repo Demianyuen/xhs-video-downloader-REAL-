@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function Home() {
   const router = useRouter();
@@ -51,11 +52,12 @@ export default function Home() {
               XHS Video Downloader
             </h1>
           </div>
-          <nav className="flex gap-6 text-sm">
+          <nav className="flex gap-6 text-sm items-center">
             <a href="/" className="text-gray-600 hover:text-gray-900 transition">Home</a>
             <a href="/blog" className="text-gray-600 hover:text-gray-900 transition">Blog</a>
-            <a href="/privacy" className="text-gray-600 hover:text-gray-900 transition">Privacy</a>
-            <a href="/terms" className="text-gray-600 hover:text-gray-900 transition">Terms</a>
+            <a href="/about" className="text-gray-600 hover:text-gray-900 transition">About</a>
+            <a href="/faq" className="text-gray-600 hover:text-gray-900 transition">FAQ</a>
+            <LanguageSwitcher />
           </nav>
         </div>
       </header>
@@ -64,32 +66,40 @@ export default function Home() {
       <main className="flex-1 flex items-center justify-center px-6 py-20">
         <div className="w-full max-w-3xl">
           {/* Main Heading with SEO keywords */}
-          <div className="text-center mb-12">
-            <h2 className="text-5xl font-bold text-gray-900 mb-4">
-              小红书视频下载器 | XHS Video Downloader
+          <div className="text-center mb-16">
+            <h2 className="text-6xl md:text-7xl font-bold text-gray-900 mb-6 tracking-tight">
+              小红书视频下载器
             </h2>
-            <p className="text-xl text-gray-600 mb-2">
+            <p className="text-2xl font-semibold text-gray-700 mb-3">
+              XHS Video Downloader
+            </p>
+            <p className="text-lg text-gray-600 mb-2">
               Free Xiaohongshu video downloader. No watermarks, no registration.
             </p>
-            <p className="text-lg text-gray-500">
+            <p className="text-base text-gray-500">
               免费下载小红书视频，无水印高清画质，无需注册
             </p>
           </div>
 
           {/* Input Section */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-            <div className="space-y-4">
-              <input
-                type="text"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder="Paste Xiaohongshu URL here... 粘贴小红书视频链接"
-                className="w-full px-6 py-5 text-lg border-2 border-gray-200 rounded-lg focus:border-pink-500 focus:outline-none transition"
-                onKeyPress={(e) => e.key === 'Enter' && !loading && handleDownload()}
-              />
+          <div className="bg-white rounded-3xl shadow-2xl p-10 mb-12 border-2 border-pink-100">
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Paste Xiaohongshu URL | 粘贴小红书视频链接
+                </label>
+                <input
+                  type="text"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder="https://www.xiaohongshu.com/explore/..."
+                  className="w-full px-8 py-6 text-lg border-2 border-gray-300 rounded-2xl focus:border-pink-500 focus:ring-4 focus:ring-pink-100 focus:outline-none transition shadow-sm"
+                  onKeyPress={(e) => e.key === 'Enter' && !loading && handleDownload()}
+                />
+              </div>
 
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-lg text-sm">
+                <div className="bg-red-50 border-2 border-red-200 text-red-700 px-6 py-4 rounded-xl text-base font-medium animate-fade-in">
                   {error}
                 </div>
               )}
@@ -97,7 +107,7 @@ export default function Home() {
               <button
                 onClick={handleDownload}
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-5 text-lg rounded-lg transition shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-6 text-xl rounded-2xl transition-all shadow-lg hover:shadow-2xl transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
