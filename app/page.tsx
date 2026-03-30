@@ -3,16 +3,18 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function Home() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleDownload = async () => {
     if (!url.trim()) {
-      setError('Please paste a valid XHS URL');
+      setError(t.input.errorEmpty);
       return;
     }
 
@@ -31,10 +33,10 @@ export default function Home() {
       if (data.success) {
         router.push(`/download/${data.videoId}`);
       } else {
-        setError(data.error || 'Failed to process video');
+        setError(data.error || t.input.errorGeneric);
       }
     } catch {
-      setError('Error processing video. Please try again.');
+      setError(t.input.errorGeneric);
     } finally {
       setLoading(false);
     }
@@ -55,10 +57,10 @@ export default function Home() {
             </span>
           </a>
           <nav className="flex gap-5 text-sm items-center">
-            <a href="/" className="text-pink-600 font-semibold">Home</a>
-            <a href="/blog"  className="text-gray-500 hover:text-gray-900 transition-colors duration-200">Blog</a>
-            <a href="/about" className="text-gray-500 hover:text-gray-900 transition-colors duration-200">About</a>
-            <a href="/faq"   className="text-gray-500 hover:text-gray-900 transition-colors duration-200">FAQ</a>
+            <a href="/"      className="text-pink-600 font-semibold">{t.header.home}</a>
+            <a href="/blog"  className="text-gray-500 hover:text-gray-900 transition-colors duration-200">{t.header.blog}</a>
+            <a href="/about" className="text-gray-500 hover:text-gray-900 transition-colors duration-200">{t.header.about}</a>
+            <a href="/faq"   className="text-gray-500 hover:text-gray-900 transition-colors duration-200">{t.header.faq}</a>
             <LanguageSwitcher />
           </nav>
         </div>
@@ -72,34 +74,34 @@ export default function Home() {
           <div className="flex justify-center mb-6 animate-fade-in">
             <span className="badge">
               <svg className="w-3 h-3 text-pink-500" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
-              Free · No Watermark · No Registration
+              {t.hero.badge}
             </span>
           </div>
 
           {/* Main heading */}
           <div className="text-center mb-12 animate-fade-in-up">
             <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-3 tracking-tight">
-              小红书视频下载器
+              {t.hero.title}
             </h1>
             <p className="text-lg sm:text-xl font-medium text-gray-500 mb-6">
-              XHS Video Downloader
+              {t.hero.subtitle}
             </p>
             <p className="text-sm text-gray-400 max-w-md mx-auto leading-relaxed">
-              Free Xiaohongshu video downloader — no watermark, no registration, HD quality.
+              {t.hero.description}
             </p>
           </div>
 
           {/* ── Input card ──────────────────────────────────── */}
           <div className="card p-8 mb-10 animate-fade-in-delay-1" style={{ boxShadow: '0 4px 32px rgba(230,57,107,0.10)' }}>
             <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide">
-              Paste Xiaohongshu URL
+              {t.input.label}
             </label>
             <div className="space-y-4">
               <input
                 type="text"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                placeholder="https://www.xiaohongshu.com/explore/..."
+                placeholder={t.input.placeholder}
                 className="input-field"
                 onKeyPress={(e) => e.key === 'Enter' && !loading && handleDownload()}
               />
@@ -121,14 +123,14 @@ export default function Home() {
                 {loading ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" />
-                    Processing...
+                    {t.input.processing}
                   </>
                 ) : (
                   <>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                     </svg>
-                    Download Video
+                    {t.input.button}
                   </>
                 )}
               </button>
@@ -143,8 +145,8 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
                   </svg>
                 ),
-                title: 'No Watermark',
-                desc: 'Original quality, no branding',
+                title: t.features.noWatermark.title,
+                desc: t.features.noWatermark.desc,
               },
               {
                 icon: (
@@ -152,8 +154,8 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
                   </svg>
                 ),
-                title: 'Fast & Free',
-                desc: 'Lightning downloads, always free',
+                title: t.features.fastFree.title,
+                desc: t.features.fastFree.desc,
               },
               {
                 icon: (
@@ -161,8 +163,8 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                   </svg>
                 ),
-                title: 'Safe & Private',
-                desc: 'No signup, no data collection',
+                title: t.features.safePrivate.title,
+                desc: t.features.safePrivate.desc,
               },
             ].map(({ icon, title, desc }) => (
               <div key={title} className="bg-white/70 backdrop-blur rounded-xl p-4 text-center border border-pink-100/60 hover:shadow-card transition-all duration-300 hover:-translate-y-1">
@@ -179,13 +181,13 @@ export default function Home() {
               <svg className="w-5 h-5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
-              How It Works
+              {t.howItWorks.title}
             </h2>
             <ol className="space-y-4">
               {[
-                { step: '1', strong: 'Copy the video link', text: ' from the Xiaohongshu app or website.' },
-                { step: '2', strong: 'Paste the URL', text: ' into the input box above.' },
-                { step: '3', strong: 'Download', text: ' and save the video to your device.' },
+                { step: '1', ...t.howItWorks.step1 },
+                { step: '2', ...t.howItWorks.step2 },
+                { step: '3', ...t.howItWorks.step3 },
               ].map(({ step, strong, text }) => (
                 <li key={step} className="flex items-start gap-4">
                   <div className="flex-shrink-0 w-7 h-7 rounded-full bg-gradient-to-br from-pink-500 to-orange-500 text-white text-xs font-bold flex items-center justify-center mt-0.5">
@@ -205,7 +207,7 @@ export default function Home() {
       <div className="py-8 border-t border-pink-100/50">
         <div className="max-w-5xl mx-auto px-6">
           <div className="h-24 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400 text-sm border border-dashed border-gray-200">
-            Advertisement Space
+            {t.footer.adSpace}
           </div>
         </div>
       </div>
@@ -214,13 +216,13 @@ export default function Home() {
       <footer className="border-t border-gray-100 py-8 mt-auto">
         <div className="max-w-7xl mx-auto px-6 text-center text-sm text-gray-400">
           <div className="flex justify-center gap-6 mb-4">
-            <a href="/"      className="hover:text-pink-500 transition-colors">Home</a>
-            <a href="/blog"  className="hover:text-pink-500 transition-colors">Blog</a>
-            <a href="/about" className="hover:text-pink-500 transition-colors">About</a>
-            <a href="/privacy" className="hover:text-pink-500 transition-colors">Privacy</a>
-            <a href="/terms" className="hover:text-pink-500 transition-colors">Terms</a>
+            <a href="/"       className="hover:text-pink-500 transition-colors">{t.footer.home}</a>
+            <a href="/blog"   className="hover:text-pink-500 transition-colors">{t.footer.blog}</a>
+            <a href="/about"  className="hover:text-pink-500 transition-colors">{t.footer.about}</a>
+            <a href="/privacy" className="hover:text-pink-500 transition-colors">{t.footer.privacy}</a>
+            <a href="/terms"  className="hover:text-pink-500 transition-colors">{t.footer.terms}</a>
           </div>
-          <p>© 2026 XHS Video Downloader. All rights reserved.</p>
+          <p>{t.footer.copyright}</p>
         </div>
       </footer>
     </div>

@@ -1,13 +1,30 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Noto_Sans_SC, Noto_Sans_TC } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 
-// Use Inter for all text - it's clean and supports Chinese well
+// Latin font
 const inter = Inter({
-  subsets: ["latin", "cyrillic", "greek", "vietnamese"],
+  subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+// Simplified Chinese font
+const notoSansSC = Noto_Sans_SC({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-sc",
+  display: "swap",
+});
+
+// Traditional Chinese font
+const notoSansTC = Noto_Sans_TC({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-tc",
   display: "swap",
 });
 
@@ -69,8 +86,10 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body className={`${inter.variable} antialiased`}>
-        {children}
+      <body className={`${inter.variable} ${notoSansSC.variable} ${notoSansTC.variable} antialiased`}>
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

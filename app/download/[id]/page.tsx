@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface VideoData {
   videoId: string;
@@ -32,6 +33,7 @@ const DEFAULT_RESOLUTIONS = ['1080p', '720p', '480p', '360p'];
 export default function DownloadPage() {
   const params = useParams();
   const videoId = params.id as string;
+  const { t } = useLanguage();
   const [videoData, setVideoData] = useState<VideoData | null>(null);
   const [selectedResolution, setSelectedResolution] = useState('720p');
   const [loading, setLoading] = useState(true);
@@ -49,7 +51,7 @@ export default function DownloadPage() {
     const fetchVideoData = async () => {
       try {
         const response = await fetch(`/api/video/${videoId}`);
-        if (!response.ok) throw new Error('Failed to load video data');
+        if (!response.ok) throw new Error(t.download.dataNotRetrieved);
         const data = await response.json();
         if (!data.availableResolutions || !Array.isArray(data.availableResolutions)) {
           data.availableResolutions = DEFAULT_RESOLUTIONS;
@@ -57,7 +59,7 @@ export default function DownloadPage() {
         setVideoData(data);
         setSelectedResolution(data.availableResolutions[0] || '720p');
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch video data');
+        setError(err instanceof Error ? err.message : t.download.dataNotRetrieved);
       } finally {
         setLoading(false);
       }
@@ -72,7 +74,7 @@ export default function DownloadPage() {
     try {
       const url = new URL(videoData.videoUrl);
       if (!['http:', 'https:'].includes(url.protocol)) {
-        setError('Invalid video URL');
+        setError(t.download.unableToLoad);
         setDownloading(false);
         return;
       }
@@ -103,7 +105,7 @@ export default function DownloadPage() {
         setTimeout(() => setDownloadSuccess(false), 3000);
       }, 1500);
     } catch {
-      setError('Failed to download video');
+      setError(t.download.failedToExtract);
       setDownloading(false);
     }
   };
@@ -128,10 +130,10 @@ export default function DownloadPage() {
       if (data.success) {
         setExtractedImages({ images: data.images, title: data.title || videoData.title });
       } else {
-        setError('No images found in this post');
+        setError(t.download.noImagesFound);
       }
     } catch {
-      setError('Failed to extract images');
+      setError(t.download.failedToExtract);
     } finally {
       setExtractingImages(false);
     }
@@ -154,10 +156,10 @@ export default function DownloadPage() {
           wordCount: data.wordCount || 0,
         });
       } else {
-        setError('No transcript available for this post');
+        setError(t.download.noTranscript);
       }
     } catch {
-      setError('Failed to extract transcript');
+      setError(t.download.failedToExtract);
     } finally {
       setExtractingTranscript(false);
     }
@@ -216,7 +218,7 @@ export default function DownloadPage() {
       <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(160deg, #fff1f2 0%, #fff7ed 50%, #fef9c3 100%)' }}>
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-500 font-medium">Loading video...</p>
+          <p className="text-gray-500 font-medium">{t.download.loadingVideo}</p>
         </div>
       </div>
     );
@@ -231,9 +233,9 @@ export default function DownloadPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
             </svg>
           </div>
-          <p className="text-red-600 font-semibold mb-2">Unable to Load Video</p>
-          <p className="text-gray-500 text-sm">{error || 'The video data could not be retrieved. Please try again.'}</p>
-          <a href="/" className="btn-primary inline-flex mt-6 text-sm">Go to Homepage</a>
+          <p className="text-red-600 font-semibold mb-2">{t.download.unableToLoad}</p>
+          <p className="text-gray-500 text-sm">{error || t.download.dataNotRetrieved}</p>
+          <a href="/" className="btn-primary inline-flex mt-6 text-sm">{t.download.goToHomepage}</a>
         </div>
       </div>
     );
@@ -252,10 +254,10 @@ export default function DownloadPage() {
             <span className="text-xl font-extrabold gradient-text hidden sm:block">XHS Downloader</span>
           </a>
           <nav className="flex gap-5 text-sm items-center">
-            <a href="/" className="text-gray-500 hover:text-gray-900 transition-colors">Home</a>
-            <a href="/blog" className="text-gray-500 hover:text-gray-900 transition-colors">Blog</a>
-            <a href="/about" className="text-gray-500 hover:text-gray-900 transition-colors">About</a>
-            <a href="/faq" className="text-gray-500 hover:text-gray-900 transition-colors">FAQ</a>
+            <a href="/" className="text-gray-500 hover:text-gray-900 transition-colors">{t.header.home}</a>
+            <a href="/blog" className="text-gray-500 hover:text-gray-900 transition-colors">{t.header.blog}</a>
+            <a href="/about" className="text-gray-500 hover:text-gray-900 transition-colors">{t.header.about}</a>
+            <a href="/faq" className="text-gray-500 hover:text-gray-900 transition-colors">{t.header.faq}</a>
             <LanguageSwitcher />
           </nav>
         </div>
@@ -279,7 +281,7 @@ export default function DownloadPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-4">
                   <div className="text-white">
-                    <p className="text-xs font-medium opacity-75 mb-0.5">Duration</p>
+                    <p className="text-xs font-medium opacity-75 mb-0.5">{t.download.duration}</p>
                     <p className="text-base font-bold">{formatDuration(videoData.duration)}</p>
                   </div>
                 </div>
@@ -301,9 +303,9 @@ export default function DownloadPage() {
                 {/* Stats bar */}
                 <div className="grid grid-cols-3 divide-x divide-gray-100 border-y border-gray-100 py-3">
                   {[
-                    { label: 'Quality', value: selectedResolution, color: 'text-pink-500' },
-                    { label: 'Format',  value: 'MP4',              color: 'text-orange-500' },
-                    { label: 'Duration',value: formatDuration(videoData.duration), color: 'text-yellow-600' },
+                    { label: t.download.quality, value: selectedResolution, color: 'text-pink-500' },
+                    { label: t.download.format,  value: 'MP4',              color: 'text-orange-500' },
+                    { label: t.download.duration, value: formatDuration(videoData.duration), color: 'text-yellow-600' },
                   ].map(({ label, value, color }) => (
                     <div key={label} className="text-center px-3">
                       <p className="text-xs text-gray-400 mb-0.5">{label}</p>
@@ -314,7 +316,7 @@ export default function DownloadPage() {
 
                 {/* Quality selector */}
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Select Quality</label>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{t.download.selectQuality}</label>
                   <div className="grid grid-cols-4 gap-2">
                     {(videoData.availableResolutions || DEFAULT_RESOLUTIONS).map((res) => (
                       <button
@@ -341,21 +343,21 @@ export default function DownloadPage() {
                   {downloading ? (
                     <>
                       <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" />
-                      Downloading...
+                      {t.download.downloading}
                     </>
                   ) : downloadSuccess ? (
                     <>
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/>
                       </svg>
-                      Download Started!
+                      {t.download.downloadStarted}
                     </>
                   ) : (
                     <>
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                       </svg>
-                      Download Video ({selectedResolution})
+                      {t.download.downloadVideo} ({selectedResolution})
                     </>
                   )}
                 </button>
@@ -374,14 +376,14 @@ export default function DownloadPage() {
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                       </svg>
-                      Link Copied!
+                      {t.download.linkCopied}
                     </span>
                   ) : (
                     <span className="flex items-center justify-center gap-1.5">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                       </svg>
-                      Copy Video Link
+                      {t.download.copyVideoLink}
                     </span>
                   )}
                 </button>
@@ -392,17 +394,17 @@ export default function DownloadPage() {
             <div className="card overflow-hidden animate-fade-in-delay-1">
               <div className="flex border-b border-gray-100">
                 {[
-                  { id: 'video',     label: 'Info',       icon: (
+                  { id: 'video',     label: t.download.tabInfo,       icon: (
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                       </svg>
                     ) },
-                  { id: 'transcript',label: 'Transcript', icon: (
+                  { id: 'transcript',label: t.download.tabTranscript, icon: (
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                       </svg>
                     ) },
-                  { id: 'images',   label: 'Images',     icon: (
+                  { id: 'images',   label: t.download.tabImages,     icon: (
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                       </svg>
@@ -427,9 +429,9 @@ export default function DownloadPage() {
                 {activeTab === 'video' && (
                   <div className="space-y-4">
                     <div className="bg-gradient-to-r from-pink-50 to-orange-50 rounded-xl p-5 border border-pink-100">
-                      <h3 className="font-semibold text-gray-800 mb-3 text-sm">Download Instructions</h3>
+                      <h3 className="font-semibold text-gray-800 mb-3 text-sm">{t.download.downloadInstructions}</h3>
                       <ol className="space-y-2 text-sm text-gray-600">
-                        {['Select your preferred video quality above', 'Click the Download Video button', 'Your browser will start downloading the file', 'Save the file to your device'].map((step, i) => (
+                        {t.download.instructionSteps.map((step, i) => (
                           <li key={i} className="flex items-start gap-2.5">
                             <span className="flex-shrink-0 w-5 h-5 rounded-full bg-pink-100 text-pink-600 text-xs font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
                             {step}
@@ -442,7 +444,7 @@ export default function DownloadPage() {
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/>
                       </svg>
                       <p className="text-xs text-blue-700 leading-relaxed">
-                        <strong>Tip:</strong> Higher resolutions provide better quality but take longer to download.
+                        <strong>{t.download.tipLabel}</strong> {t.download.tipText}
                       </p>
                     </div>
                   </div>
@@ -456,11 +458,11 @@ export default function DownloadPage() {
                           {extractedTranscript.text}
                         </div>
                         <div className="flex items-center justify-between text-xs text-gray-500 bg-blue-50 rounded-xl px-4 py-2.5">
-                          <span>{extractedTranscript.wordCount} words</span>
-                          <span>~{Math.ceil(extractedTranscript.wordCount / 150)} min read</span>
+                          <span>{extractedTranscript.wordCount} {t.download.words}</span>
+                          <span>~{Math.ceil(extractedTranscript.wordCount / 150)} {t.download.minRead}</span>
                         </div>
                         <button onClick={handleDownloadTranscript} className="btn-primary w-full text-sm py-3">
-                          Download Transcript
+                          {t.download.downloadTranscript}
                         </button>
                       </>
                     ) : (
@@ -471,9 +473,9 @@ export default function DownloadPage() {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                           </div>
-                          <p className="font-semibold text-gray-800 mb-1">Extract Transcript</p>
+                          <p className="font-semibold text-gray-800 mb-1">{t.download.extractTranscript}</p>
                           <p className="text-xs text-gray-500 mb-4">
-                            Extract the full text content from this XHS post, including captions and descriptions.
+                            {t.download.extractTranscriptDesc}
                           </p>
                           <button
                             onClick={handleExtractTranscript}
@@ -481,9 +483,9 @@ export default function DownloadPage() {
                             className="btn-primary text-sm py-2.5"
                           >
                             {extractingTranscript ? (
-                              <><div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" /> Extracting...</>
+                              <><div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" /> {t.download.extractingTranscript}</>
                             ) : (
-                              'Extract Transcript'
+                              t.download.extractTranscript
                             )}
                           </button>
                         </div>
@@ -497,7 +499,7 @@ export default function DownloadPage() {
                     {extractedImages ? (
                       <>
                         <div className="bg-blue-50 rounded-xl px-4 py-2.5 border border-blue-100 text-xs text-blue-700">
-                          Found {extractedImages.images.length} image(s) from this post
+                          {t.download.foundImages.replace('{count}', String(extractedImages.images.length))}
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                           {extractedImages.images.map((image, index) => (
@@ -513,13 +515,13 @@ export default function DownloadPage() {
                                   onClick={() => handleDownloadImage(image.url, `xhs-image-${index + 1}.jpg`)}
                                   className="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white text-xs font-semibold py-2 rounded-lg transition-all shadow-sm"
                                 >
-                                  Download
+                                  {t.download.downloadVideo}
                                 </button>
                               </div>
                             </div>
                           ))}
                         </div>
-                        <p className="text-xs text-gray-400 text-center">Images are downloaded in their original quality</p>
+                        <p className="text-xs text-gray-400 text-center">{t.download.imagesOriginalQuality}</p>
                       </>
                     ) : (
                       <div className="text-center py-8">
@@ -529,9 +531,9 @@ export default function DownloadPage() {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
                           </div>
-                          <p className="font-semibold text-gray-800 mb-1">Extract Images</p>
+                          <p className="font-semibold text-gray-800 mb-1">{t.download.extractImages}</p>
                           <p className="text-xs text-gray-500 mb-4">
-                            Extract all images from this XHS post including product photos and lifestyle shots.
+                            {t.download.extractImagesDesc}
                           </p>
                           <button
                             onClick={handleExtractImages}
@@ -539,14 +541,14 @@ export default function DownloadPage() {
                             className="btn-primary text-sm py-2.5"
                           >
                             {extractingImages ? (
-                              <><div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" /> Extracting...</>
+                              <><div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" /> {t.download.extractingImages}</>
                             ) : (
-                              'Extract Images'
+                              t.download.extractImages
                             )}
                           </button>
                         </div>
                         <p className="text-xs text-yellow-700 bg-yellow-50 rounded-lg px-3 py-2 inline-block border border-yellow-100">
-                          Image extraction works best for posts with multiple images.
+                          {t.download.imageExtractionTip}
                         </p>
                       </div>
                     )}
@@ -562,13 +564,9 @@ export default function DownloadPage() {
 
               {/* Tips */}
               <div>
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-3">Quick Tips</h3>
+                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-3">{t.download.quickTips}</h3>
                 <div className="space-y-2.5 text-xs text-gray-500">
-                  {[
-                    'Select your preferred quality above',
-                    'Click Download — file saves to your device',
-                    "If download doesn't start, try Copy Link",
-                  ].map((tip, i) => (
+                  {t.download.quickTipItems.map((tip, i) => (
                     <div key={i} className="flex items-start gap-2.5">
                       <span className="flex-shrink-0 w-5 h-5 rounded-full bg-pink-100 text-pink-500 text-xs font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
                       {tip}
@@ -581,7 +579,7 @@ export default function DownloadPage() {
 
               {/* Share */}
               <div>
-                <h4 className="text-sm font-bold text-gray-700 mb-3">Share</h4>
+                <h4 className="text-sm font-bold text-gray-700 mb-3">{t.download.share}</h4>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { label: 'Twitter', bg: 'bg-sky-50 hover:bg-sky-100', text: 'text-sky-600', icon: (
@@ -613,7 +611,7 @@ export default function DownloadPage() {
                 href="/"
                 className="btn-primary w-full text-sm py-3 text-center"
               >
-                Download Another Video
+                {t.download.downloadAnother}
               </a>
             </div>
           </div>
@@ -624,12 +622,12 @@ export default function DownloadPage() {
       <footer className="border-t border-gray-100 py-8 mt-12">
         <div className="max-w-7xl mx-auto px-6 text-center text-sm text-gray-400">
           <div className="flex justify-center gap-6 mb-4">
-            <a href="/" className="hover:text-pink-500 transition-colors">Home</a>
-            <a href="/blog" className="hover:text-pink-500 transition-colors">Blog</a>
-            <a href="/privacy" className="hover:text-pink-500 transition-colors">Privacy</a>
-            <a href="/terms" className="hover:text-pink-500 transition-colors">Terms</a>
+            <a href="/" className="hover:text-pink-500 transition-colors">{t.footer.home}</a>
+            <a href="/blog" className="hover:text-pink-500 transition-colors">{t.footer.blog}</a>
+            <a href="/privacy" className="hover:text-pink-500 transition-colors">{t.footer.privacy}</a>
+            <a href="/terms" className="hover:text-pink-500 transition-colors">{t.footer.terms}</a>
           </div>
-          <p>© 2026 XHS Video Downloader. All rights reserved.</p>
+          <p>{t.footer.copyright}</p>
         </div>
       </footer>
     </div>
