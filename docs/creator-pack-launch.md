@@ -38,6 +38,14 @@ OPENAI_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe
 3. Deploy production.
 4. Share the pricing page in 10 small creator/teacher/designer communities with one concrete use case.
 
+## Emergency public landing page
+
+- Live URL: `https://demianyuen.github.io/rednote-creator-pack-landing/`
+- Backup renderer: `https://raw.githack.com/Demianyuen/rednote-creator-pack-landing/main/index.html`
+- Repo: `https://github.com/Demianyuen/rednote-creator-pack-landing`
+- Purpose: provide a public sales/request page while the main Vercel domain is still serving the old 404 and Vercel preview deployments are protected by SSO.
+- Payment state: manual email request only until a real Stripe Payment Link or PayPal payment link is available.
+
 ## Deployment status on 2026-07-05
 
 - GitHub commit pushed: `7753add feat: add RedNote creator monetization pack`
@@ -50,6 +58,8 @@ OPENAI_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe
   - `Vercel - xhs-video-downloader-fix`
 - The deployment URLs are protected by Vercel SSO, so they are not usable as public sales links.
 - `https://xhsvideodownloader.com/pricing` still returned the old 404 at the time of checking, so the custom domain alias needs to be pointed at the successful production project or redeployed with a valid Vercel token.
+- GitHub Pages deployment on the original repo failed at the Pages deploy service step with `Deployment failed, try again later`.
+- A separate clean landing repo was created and GitHub Pages deployed successfully after toggling Pages source from branch to workflow and back to branch.
 - The local pages were smoke-tested successfully:
   - `http://localhost:3000/pricing`
   - `http://localhost:3000/creator-pack`
