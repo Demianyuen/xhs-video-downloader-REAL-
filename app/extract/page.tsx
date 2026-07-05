@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useI18n } from '@/app/lib/i18n';
 import { FileText, Copy, Check, Loader2, AlertCircle } from 'lucide-react';
+import { extractSupportedUrl, isSupportedXHSUrl } from '@/lib/xhs-url';
 
 const extractContent = {
   'zh-Hant': {
@@ -57,17 +58,17 @@ const extractContent = {
   },
   'en': {
     badge: 'Text Extraction Tool',
-    title: 'Extract Text from XHS Posts',
-    subtitle: 'Paste a Xiaohongshu post URL to automatically extract its text content',
-    inputLabel: 'Xiaohongshu Post URL',
-    inputPlaceholder: 'Paste XHS link, e.g. https://www.xiaohongshu.com/explore/...',
+    title: 'Extract Text from XHS and RedNote Posts',
+    subtitle: 'Paste a Xiaohongshu or RedNote post URL to extract titles, captions, and hashtags',
+    inputLabel: 'Xiaohongshu or RedNote Post URL',
+    inputPlaceholder: 'Paste XHS or RedNote link, e.g. https://www.rednote.com/explore/...',
     extractBtn: 'Extract Text',
     extracting: 'Extracting...',
     copyBtn: 'Copy All',
     copied: 'Copied!',
     resultTitle: 'Extracted Text',
     howTitle: 'What does this tool do?',
-    howDesc: 'This tool analyzes Xiaohongshu post pages and extracts their text content, including titles, body descriptions, and hashtags. Ideal for saving recipes, travel guides, study notes, and other valuable text information.',
+    howDesc: 'This tool analyzes Xiaohongshu and RedNote post pages and extracts their text content, including titles, body descriptions, and hashtags. Ideal for saving recipes, travel guides, study notes, and other valuable text information.',
     useCases: [
       'Save recipes and cooking steps',
       'Organize travel guides and attraction info',
@@ -75,9 +76,9 @@ const extractContent = {
       'Extract outfit tips and shopping lists',
       'Save workout plans and exercise tutorials',
     ],
-    note: 'Note: This tool extracts the text description of a post. Text embedded inside images requires OCR recognition.',
-    errorEmpty: 'Please enter a Xiaohongshu URL',
-    errorInvalid: 'Please enter a valid Xiaohongshu URL',
+    note: 'Note: This tool extracts post metadata and captions. Text embedded inside images requires OCR recognition, which can be added as the next processing step.',
+    errorEmpty: 'Please enter a Xiaohongshu or RedNote URL',
+    errorInvalid: 'Please enter a valid Xiaohongshu, XHS short link, or RedNote URL',
     errorFailed: 'Extraction failed, please try again later',
   },
 };
@@ -94,9 +95,9 @@ export default function ExtractPage() {
 
   const handleExtract = async (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmed = url.trim();
+    const trimmed = extractSupportedUrl(url);
     if (!trimmed) { setError(c.errorEmpty); return; }
-    if (!trimmed.includes('xiaohongshu.com') && !trimmed.includes('xhslink.com')) {
+    if (!isSupportedXHSUrl(trimmed)) {
       setError(c.errorInvalid);
       return;
     }

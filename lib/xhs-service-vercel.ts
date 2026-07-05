@@ -46,9 +46,8 @@ export interface ProcessedVideo {
  */
 export function extractVideoId(url: string): string | null {
   const patterns = [
-    /(?:xiaohongshu\.com|xhslink\.com)\/(?:explore|discovery\/item)\/([a-zA-Z0-9]+)/,
-    /(?:xiaohongshu\.com|xhslink\.com)\/([a-zA-Z0-9]+)/,
-    /note\/([a-zA-Z0-9]+)/,
+    /(?:xiaohongshu\.com|rednote\.com)\/(?:explore|discovery\/item|note)\/([a-zA-Z0-9_-]+)/,
+    /(?:xhslink\.com)\/(?:a\/)?([a-zA-Z0-9_-]+)/,
   ];
 
   for (const pattern of patterns) {
@@ -214,7 +213,7 @@ export async function processXHSVideo(
  * Validate if a URL is a valid XHS video URL
  */
 export function isValidXHSUrl(url: string): boolean {
-  return /(?:xiaohongshu\.com|xhslink\.com)/.test(url);
+  return /(?:xiaohongshu\.com|xhslink\.com|rednote\.com)/.test(url);
 }
 
 /**

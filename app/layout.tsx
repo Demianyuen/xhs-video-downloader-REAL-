@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "XHS Video Downloader - Download Xiaohongshu Videos Free",
-  description: "Free online Xiaohongshu video downloader. Download XHS videos without watermark in HD quality. No registration required.",
+  title: "XHS Video Downloader - RedNote Text Extraction and Video Transcript Tool",
+  description: "Download Xiaohongshu videos, extract RedNote/XHS post text, and turn public video links into transcripts for creator research.",
   keywords: "小红书下载,小红书视频下载,XHS下载器,小红书无水印,xiaohongshu downloader,xhs video downloader",
   authors: [{ name: "XHS Downloader" }],
   creator: "XHS Downloader",
@@ -34,8 +34,8 @@ export const metadata: Metadata = {
     canonical: "https://xhsvideodownloader.com/",
   },
   openGraph: {
-    title: "XHS Video Downloader - Download Xiaohongshu Videos Free",
-    description: "Free online Xiaohongshu video downloader. Download XHS videos without watermark in HD quality.",
+    title: "XHS Video Downloader - RedNote Text Extraction and Transcript Tool",
+    description: "Download Xiaohongshu videos, extract RedNote/XHS post text, and prepare video transcripts for creator research.",
     type: "website",
     locale: "zh_CN",
     alternateLocale: ["zh_TW", "en_US"],
@@ -53,8 +53,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "XHS Video Downloader - Download Xiaohongshu Videos Free",
-    description: "Free online Xiaohongshu video downloader. No watermark, HD quality.",
+    title: "XHS Video Downloader - RedNote Text Extraction and Transcript Tool",
+    description: "Download Xiaohongshu videos, extract RedNote/XHS post text, and prepare video transcripts.",
     images: ["https://xhsvideodownloader.com/og-image.png"],
   },
   formatDetection: {
@@ -73,12 +73,12 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "XHS Downloader",
-    "description": "Free online Xiaohongshu video downloader",
+    "description": "Download Xiaohongshu videos, extract RedNote/XHS post text, and prepare video transcripts for creator research.",
     "url": "https://xhsvideodownloader.com",
     "applicationCategory": "UtilityApplication",
     "offers": {
       "@type": "Offer",
-      "price": "0",
+      "price": "9",
       "priceCurrency": "USD",
       "availability": "https://schema.org/InStock"
     },

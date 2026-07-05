@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect, FormEvent } from "react";
+import Link from "next/link";
 import { useI18n } from "./lib/i18n";
 import { getUsageStatus, recordDownload, getMaxDailyDownloads, UsageStatus } from "@/lib/usage-limiter";
+import { extractSupportedUrl } from "@/lib/xhs-url";
 import { Sparkles, Zap, Shield, Download, Loader2, BookOpen, Code, Globe, FileText, Copy, Check, ChevronDown, ChevronUp } from "lucide-react";
 
 function HomeContent() {
@@ -30,17 +32,10 @@ function HomeContent() {
     }
   }, [cooldown]);
 
-  const extractXHUrl = (input: string): string => {
-    // Preserve xsec_token and xsec_source query params — required for XHS API auth
-    const xhsRegex = /https?:\/\/[^\s]*xiaohongshu\.com\/(?:explore|discovery\/item)\/[a-zA-Z0-9]+(?:\?[^\s]*)?/;
-    const match = input.match(xhsRegex);
-    return match ? match[0] : input.trim();
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawInput = e.target.value;
     if (rawInput.includes('\n') || rawInput.includes(' ')) {
-      const extracted = extractXHUrl(rawInput);
+      const extracted = extractSupportedUrl(rawInput);
       setUrl(extracted);
     } else {
       setUrl(rawInput);
@@ -49,7 +44,7 @@ function HomeContent() {
 
   const handleDownload = async (e: FormEvent) => {
     e.preventDefault();
-    const cleanUrl = extractXHUrl(url);
+    const cleanUrl = extractSupportedUrl(url);
     if (!cleanUrl) { alert(t.error.emptyUrl); return; }
 
     const currentUsage = getUsageStatus();
@@ -167,6 +162,14 @@ function HomeContent() {
               )}
             </button>
           </form>
+
+          <div className="mt-4 rounded-xl border border-pink-100 bg-pink-50 px-4 py-3 text-sm text-gray-700">
+            Need post text or transcripts for content research?
+            <Link href="/pricing" className="ml-1 font-bold text-pink-700 hover:text-pink-800">
+              Get the $9 RedNote Creator Pack
+            </Link>
+            .
+          </div>
 
           {videoData && (
             <div className="mt-6 bg-gray-50 rounded-2xl p-4 border border-pink-100">

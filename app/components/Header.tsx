@@ -39,6 +39,9 @@ export default function Header() {
             <Link href="/guide" className={navLink('/guide', '', 'hidden sm:inline')}>
               {locale === 'en' ? 'Guide' : '指南'}
             </Link>
+            <Link href="/pricing" className={navLink('/pricing', '', 'hidden sm:inline')}>
+              {locale === 'en' ? 'Pricing' : 'Pro'}
+            </Link>
             <Link href="/about" className={navLink('/about', '', 'hidden sm:inline')}>
               {t.header.about}
             </Link>

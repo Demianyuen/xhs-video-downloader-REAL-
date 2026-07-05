@@ -1,47 +1,73 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
+import { extractSupportedUrl, isSupportedXHSUrl } from '@/lib/xhs-url';
+import { transcribeMediaUrl } from '@/lib/transcript-service';
 
 export async function POST(request: NextRequest) {
   try {
-    const { url, language = "en" } = await request.json();
+    const body = await request.json().catch(() => null);
+    if (!body) {
+      return NextResponse.json({ success: false, error: 'Invalid JSON body' }, { status: 400 });
+    }
 
-    if (!url) {
+    const { mediaUrl, url, language = 'zh' } = body;
+    const sourceUrl = mediaUrl || url;
+
+    if (!sourceUrl) {
       return NextResponse.json(
-        { success: false, error: "URL is required" },
-        { status: 400 }
+        { success: false, error: 'Please provide mediaUrl or a Xiaohongshu/RedNote post URL.' },
+        { status: 400 },
       );
     }
 
-    // Extract video ID from XHS URL
-    const videoIdMatch = url.match(/video\/(\d+)/);
-    if (!videoIdMatch) {
-      return NextResponse.json(
-        { success: false, error: "Invalid XHS URL" },
-        { status: 400 }
-      );
+    let directMediaUrl = mediaUrl;
+    let source = 'direct_media_url';
+
+    if (!directMediaUrl) {
+      const extractedUrl = extractSupportedUrl(url);
+      if (!isSupportedXHSUrl(extractedUrl)) {
+        return NextResponse.json(
+          { success: false, error: 'Please provide a valid Xiaohongshu, XHS short link, or RedNote URL.' },
+          { status: 400 },
+        );
+      }
+
+      const downloadResponse = await fetch(new URL('/api/download', request.url), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: extractedUrl }),
+      });
+      const downloadPayload = await downloadResponse.json();
+
+      if (!downloadPayload.success || !downloadPayload.downloadUrl) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: downloadPayload.error || 'Could not resolve a downloadable media URL for transcription.',
+          },
+          { status: 422 },
+        );
+      }
+
+      directMediaUrl = downloadPayload.downloadUrl;
+      source = downloadPayload.source || 'post_download_resolution';
     }
 
-    // TODO: Integrate with actual transcript service
-    // For now, return a placeholder
-    const transcript = `[Transcript for video ${videoIdMatch[1]}]
-
-This is a placeholder transcript. In production, this would be:
-1. Extracted from the video using speech-to-text API
-2. Translated to the requested language
-3. Formatted and returned
-
-Supported languages: English, Chinese (Simplified), Chinese (Traditional), Spanish, French`;
+    const transcript = await transcribeMediaUrl(directMediaUrl, { language });
 
     return NextResponse.json({
       success: true,
-      transcript,
+      transcript: transcript.text,
       language,
-      videoId: videoIdMatch[1],
+      model: transcript.model,
+      source,
     });
   } catch (error) {
-    console.error("Transcript error:", error);
+    const message = error instanceof Error ? error.message : 'Failed to transcribe media.';
+    console.error('[transcript] Error:', message);
+
     return NextResponse.json(
-      { success: false, error: "Failed to get transcript" },
-      { status: 500 }
+      { success: false, error: message },
+      { status: message.includes('OPENAI_API_KEY') ? 503 : 500 },
     );
   }
 }

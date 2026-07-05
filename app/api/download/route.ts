@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isValidXHSUrl, extractVideoId } from '@/lib/xhs-service-vercel';
+import { extractSupportedUrl, normalizeXHSUrl } from '@/lib/xhs-url';
 
 const DESKTOP_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
@@ -138,26 +139,34 @@ async function scrapePageFallback(pageUrl: string, cookies: string): Promise<{
 
 export async function POST(request: NextRequest) {
   try {
-    const { url } = await request.json();
+    const body = await request.json().catch(() => null);
+    if (!body) {
+      return NextResponse.json({ success: false, error: 'Invalid JSON body' }, { status: 400 });
+    }
+
+    const { url } = body;
 
     if (!url) {
       return NextResponse.json({ success: false, error: 'URL is required' }, { status: 400 });
     }
 
-    if (!isValidXHSUrl(url)) {
+    const extractedUrl = extractSupportedUrl(url);
+
+    if (!isValidXHSUrl(extractedUrl)) {
       return NextResponse.json(
-        { success: false, error: 'Invalid XHS URL. Please provide a valid Xiaohongshu link.' },
+        { success: false, error: 'Invalid URL. Please provide a Xiaohongshu, XHS short link, or RedNote link.' },
         { status: 400 }
       );
     }
 
-    const videoId = extractVideoId(url);
+    const normalizedUrl = normalizeXHSUrl(extractedUrl);
+    const videoId = extractVideoId(normalizedUrl);
     if (!videoId) {
       return NextResponse.json({ success: false, error: 'Could not extract video ID from URL' }, { status: 400 });
     }
 
     // Extract xsec_token and xsec_source from the share URL
-    const parsedUrl = new URL(url.startsWith('http') ? url : `https://www.xiaohongshu.com${url}`);
+    const parsedUrl = new URL(normalizedUrl.startsWith('http') ? normalizedUrl : `https://www.xiaohongshu.com${normalizedUrl}`);
     const xsecToken = parsedUrl.searchParams.get('xsec_token') || '';
     const xsecSource = parsedUrl.searchParams.get('xsec_source') || 'pc_feed';
 
@@ -182,7 +191,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Strategy 2: Page scrape fallback (works if not IP-blocked)
-    const pageResult = await scrapePageFallback(url, cookies);
+    const pageResult = await scrapePageFallback(normalizedUrl, cookies);
     if (pageResult.videoUrl) {
       return NextResponse.json({
         success: true,
@@ -196,8 +205,8 @@ export async function POST(request: NextRequest) {
 
     // No token and scraping failed — tell user to include the full share URL
     const errorMsg = xsecToken
-      ? '無法提取視頻連結。請確認連結是公開的視頻筆記，或稍後再試。'
-      : '請貼上完整的小紅書分享連結（包含 xsec_token 參數）以確保下載成功。';
+      ? 'Could not fetch the video from this post. The platform may have blocked the request or changed its response format.'
+      : 'Please paste the full share link from the Xiaohongshu/RedNote app. Short or copied browser links may be missing the xsec_token required for video extraction.';
 
     return NextResponse.json({ success: false, error: errorMsg }, { status: 422 });
 
