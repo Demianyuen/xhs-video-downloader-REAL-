@@ -37,3 +37,19 @@ OPENAI_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe
 2. Add the link to Vercel environment variables.
 3. Deploy production.
 4. Share the pricing page in 10 small creator/teacher/designer communities with one concrete use case.
+
+## Deployment status on 2026-07-05
+
+- GitHub commit pushed: `7753add feat: add RedNote creator monetization pack`
+- Local verification passed:
+  - `node --test lib/*.test.mjs`
+  - `npm run lint` (0 errors, one pre-existing font warning)
+  - `npm run build`
+- Vercel deployments were triggered by GitHub and at least two builds completed successfully:
+  - `Vercel - xhs-downloader`
+  - `Vercel - xhs-video-downloader-fix`
+- The deployment URLs are protected by Vercel SSO, so they are not usable as public sales links.
+- `https://xhsvideodownloader.com/pricing` still returned the old 404 at the time of checking, so the custom domain alias needs to be pointed at the successful production project or redeployed with a valid Vercel token.
+- The local pages were smoke-tested successfully:
+  - `http://localhost:3000/pricing`
+  - `http://localhost:3000/creator-pack`
