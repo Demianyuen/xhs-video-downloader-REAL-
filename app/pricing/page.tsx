@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Check, FileText, Sparkles, Video, Zap } from 'lucide-react';
 import { getPaymentTarget } from '@/lib/payment-config';
+import { CREATOR_PACK_OFFER } from '@/lib/creator-pack-offer';
 
 const packFeatures = [
   '10 RedNote/XHS post text extractions with clean copy-ready output',
@@ -48,7 +49,9 @@ export default function PricingPage() {
                 href={payment.href}
                 className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-gray-950 px-6 py-3 text-sm font-bold text-white transition hover:bg-pink-600"
               >
-                {payment.provider === 'email' ? 'Request the $9 pack' : 'Buy the $9 pack'}
+                {payment.provider === 'email'
+                  ? `Request the ${CREATOR_PACK_OFFER.displayPrice} pack`
+                  : `Buy the ${CREATOR_PACK_OFFER.displayPrice} pack`}
               </a>
               <Link
                 href="/extract"
@@ -76,8 +79,10 @@ export default function PricingPage() {
                 <p className="mt-1 text-sm text-gray-600">One-time launch offer</p>
               </div>
               <div className="text-right">
-                <div className="text-4xl font-black text-gray-950">$9</div>
-                <div className="text-xs font-medium uppercase tracking-wide text-pink-700">USD</div>
+                <div className="text-4xl font-black text-gray-950">{CREATOR_PACK_OFFER.displayPrice}</div>
+                <div className="text-xs font-medium uppercase tracking-wide text-pink-700">
+                  {CREATOR_PACK_OFFER.currency}
+                </div>
               </div>
             </div>
 

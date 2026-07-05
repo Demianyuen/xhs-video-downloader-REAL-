@@ -15,7 +15,7 @@ Set one or both payment links:
 
 ```bash
 NEXT_PUBLIC_STRIPE_CREATOR_PACK_LINK=https://buy.stripe.com/...
-NEXT_PUBLIC_PAYPAL_CREATOR_PACK_LINK=https://paypal.me/.../9
+NEXT_PUBLIC_PAYPAL_CREATOR_PACK_LINK=https://paypal.me/.../12
 ```
 
 For transcription:

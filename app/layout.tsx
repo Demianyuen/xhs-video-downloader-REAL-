@@ -5,6 +5,7 @@ import "./globals.css";
 import Header from "./components/Header";
 import { I18nProvider } from "./lib/i18n";
 import FontProvider from "./components/FontProvider";
+import { CREATOR_PACK_OFFER } from "@/lib/creator-pack-offer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -78,8 +79,8 @@ export default function RootLayout({
     "applicationCategory": "UtilityApplication",
     "offers": {
       "@type": "Offer",
-      "price": "9",
-      "priceCurrency": "USD",
+      "price": String(CREATOR_PACK_OFFER.priceUsd),
+      "priceCurrency": CREATOR_PACK_OFFER.currency,
       "availability": "https://schema.org/InStock"
     },
     "aggregateRating": {

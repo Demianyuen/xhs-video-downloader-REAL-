@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useI18n } from "./lib/i18n";
 import { getUsageStatus, recordDownload, getMaxDailyDownloads, UsageStatus } from "@/lib/usage-limiter";
 import { extractSupportedUrl } from "@/lib/xhs-url";
+import { CREATOR_PACK_OFFER } from "@/lib/creator-pack-offer";
 import { Sparkles, Zap, Shield, Download, Loader2, BookOpen, Code, Globe, FileText, Copy, Check, ChevronDown, ChevronUp } from "lucide-react";
 
 function HomeContent() {
@@ -166,7 +167,7 @@ function HomeContent() {
           <div className="mt-4 rounded-xl border border-pink-100 bg-pink-50 px-4 py-3 text-sm text-gray-700">
             Need post text or transcripts for content research?
             <Link href="/pricing" className="ml-1 font-bold text-pink-700 hover:text-pink-800">
-              Get the $9 RedNote Creator Pack
+              Get the {CREATOR_PACK_OFFER.displayPrice} RedNote Creator Pack
             </Link>
             .
           </div>
