@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://demianyuen.github.io/xhs-video-downloader-REAL-/sitemap.xml
