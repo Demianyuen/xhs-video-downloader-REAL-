@@ -17,11 +17,11 @@ The launch offer turns one public post into a compact creator pack:
 - Title, description, hashtags, and keyword notes
 - Short hooks and caption ideas for repurposing
 
-Launch price: USD 9 per post pack.
+Launch price: USD 12 per post pack.
 
 Order form:
 
-https://rawcdn.githack.com/Demianyuen/rednote-creator-pack-landing/9c46f6049405a6f3e1b555520572ce5c0195864b/index.html
+https://rawcdn.githack.com/Demianyuen/rednote-creator-pack-landing/91d7c880a044a01a1696036b4096bbc1d2cb9934/index.html
 
 Payment is handled by PayPal or Stripe invoice after the order request.
 

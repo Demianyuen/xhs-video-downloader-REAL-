@@ -5,7 +5,7 @@ Goal: make the site capable of collecting the first small payment quickly withou
 ## Product
 
 - Name: RedNote Creator Pack
-- Price: USD 9 one-time launch offer
+- Price: USD 12 one-time launch offer
 - Target users: creators, teachers, designers, small business owners
 - Promise: extract RedNote/XHS post text and prepare reusable creator notes; provide manual help for failed public links
 
@@ -33,7 +33,7 @@ OPENAI_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe
 
 ## Fastest route to first USD 10
 
-1. Create a Stripe Payment Link or PayPal payment link for USD 9.
+1. Create a Stripe Payment Link or PayPal payment link for USD 12.
 2. Add the link to Vercel environment variables.
 3. Deploy production.
 4. Share the pricing page in 10 small creator/teacher/designer communities with one concrete use case.
